@@ -12,20 +12,11 @@ zstyle :compinstall filename '/home/solar/.zshrc'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
-autoload -Uz promptinit
-promptinit
-prompt walters
 
 #set opts{{{ 
 setopt correct_all
 #}}}
 
-#bind alt
-bindkey ";3D" backward-word
-bindkey ";3C" forward-word
-#bind ctrl
-bindkey ";5D" backward-word
-bindkey ";5C" forward-word
 #lf bind
 bindkey -s '^o' 'lfcd\n' 
 # history search bind
@@ -42,8 +33,7 @@ bindkey -M menuselect 'l' vi-forward-char
 bindkey -M menuselect 'j' vi-down-line-or-history
 
 
-#: Prompt{{{ @Overides promptinit
-
+#: Prompt{{{ 
 PROMPT="[%F{blue}%~%f] "  
 RPROMPT=''
 
@@ -61,6 +51,7 @@ alias ls="ls --color=auto"
 alias bat='upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"'
 alias task='nocorrect task'
 alias weather="noglob curl https://wttr.in/?0pq"
+alias cd="z"
 #: Evnironment Variables{{{
 export EDITOR=nvim
 #: }}}
@@ -73,8 +64,6 @@ export EDITOR=nvim
 source /usr/share/zsh/plugins/zsh-z/zsh-z.plugin.zsh
 #autosuggest
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-#esc esc = sudo :)
-#source /usr/share/zsh/plugins/zsh-sudo/sudo.plugin.zsh
 #fish like syntax highlighting
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 #lfcd

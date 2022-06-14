@@ -251,7 +251,7 @@ map a push A<a-b> # after extension
 map br bulk-rename
 
 # Movement
-map gD cd ~/Desktop
 map gd cd ~/Downloads
 map gp cd ~/Pictures
 map gc cd ~/.config
+map gv cd ~/Videos
