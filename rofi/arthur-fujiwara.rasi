@@ -1,12 +1,7 @@
-/**
- * ROFI Color theme
- * User: Qball
- * Copyright: Dave Davenport
- */
-
 *{
 	highlight: none;
-    foreground:  #ffeedd;
+   // foreground:  #ffeedd;
+	foreground: #ffffff;
     backlight:   #ccffeedd;
     background-color:  transparent;
 	borderc: #7F9F7F;
