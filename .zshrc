@@ -36,7 +36,7 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 #: Prompt{{{ 
 PROMPT="[%F{blue}%~%f] "  
 RPROMPT=''
-
+#: }}}
 
 #: Alias{{{
 #add the pacman -R alias thingy ykwim
@@ -51,15 +51,13 @@ alias ls="ls --color=auto"
 alias bat='upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"'
 alias task='nocorrect task'
 alias weather="noglob curl https://wttr.in/?0pq"
-alias cd="z"
-#: Evnironment Variables{{{
+#: }}}
+
+#: Environment Variables{{{
 export EDITOR=nvim
 #: }}}
 
-
-
 #: Plugins{{{
-
 #z plugin
 source /usr/share/zsh/plugins/zsh-z/zsh-z.plugin.zsh
 #autosuggest
@@ -70,3 +68,4 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 source ~/.config/lf/lfcd.sh
 #zsh sudo plugin
 source /usr/share/zsh/plugins/zsh-sudo/sudo.plugin.zsh 
+#: }}}

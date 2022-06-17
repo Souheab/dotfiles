@@ -22,4 +22,4 @@ nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 
 :colorscheme onedark
-:hi Normal ctermbg=NONE
+" hi Normal ctermbg=NONE
