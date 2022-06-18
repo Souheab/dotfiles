@@ -2,7 +2,7 @@ configuration {
 font: "Fantasque Sans Mono Nerd Font Bold 14";
 cycle: true;
 modi: [drun,window];
-display-drun: "Apps";
+display-drun: "";
 case-sensitive: false;
 matching: "fuzzy";
 fixed-num-lines: true;

@@ -1,46 +1,18 @@
 *{
 	highlight: none;
-   // foreground:  #ffeedd;
-	foreground: #ffffff;
     backlight:   #ccffeedd;
     background-color:  transparent;
 	borderc: #7F9F7F;
     dark: #1c1c1c;
-    // Black
-    black:       #3d352a;
-    lightblack:  #554444;
-    tlightblack:  #554444cc;
-    //
-    // Red
     red:         #cd5c5c;
-    lightred:    #cc5533;
-    //
     // Green
     green:       #86af80;
     lightgreen:  #88cc22;
-    //
     // Yellow
     yellow:      #e8ae5b;
     lightyellow:     #ffa75d;
-    //
     // Blue
     blue:      #6495ed;
-    lightblue:     #87ceeb;
-    //
-    // Magenta
-    magenta:      #deb887;
-    lightmagenta:     #996600;
-    //
-    // Cyan
-    cyan:      #b0c4de;
-    tcyan:      #ccb0c4de;
-    lightcyan:     #b0c4de;
-    //
-    // White
-    white:      #bbaa99;
-    lightwhite:     #ddccbb;
-    //
-    // Bold, Italic, Underline
 
     transparent: rgba(0,0,0,0);
 	font: "Source Code Pro 10";
@@ -54,6 +26,7 @@ window {
     spacing: 0;
     children:  [mainbox];
     orientation: horizontal;
+	width: 35%;
 }
 mainbox {
     spacing: 0;
@@ -62,11 +35,6 @@ mainbox {
 message {
     border-color: @borderc;
     border:  0px 2px 2px 2px;
-//    border-radius: 10px;
-}
-message {
-    font: "Source Code Pro 8";
-    color: @black;
 }
 inputbar {
     color: @lightgreen;
@@ -79,9 +47,7 @@ inputbar {
 entry,prompt,case-indicator {
     text-font: inherit;
     text-color:inherit;
-}
-prompt {
-    margin:     0px 0.3em 0em 0em ;
+	padding: 0px 3px 0px 0px;
 }
 listview {
     padding: 8px;
@@ -95,9 +61,8 @@ element {
     padding: 3px;
     vertical-align: 0.5;
     background-color: transparent;
-    color: @foreground;
+    color: #ffffff;
     font:inherit;
-	highlight: underline;
 }
 element-text {
     background-color: inherit;
@@ -106,44 +71,7 @@ element-text {
 element selected.normal {
 	text-color: @blue;
 }
-element normal active {
-    foreground: @lightblue;
-}
-element normal urgent {
-    foreground: @lightred;
-}
-element alternate normal {
-}
-element alternate active {
-    foreground: @lightblue;
-}
-element alternate urgent {
-    foreground: @lightred;
-}
-element selected active {
-    background-color: @lightblue;
-    foreground: @dark;
-}
-element selected urgent {
-    background-color: @lightred;
-    foreground: @dark;
-}
-element normal normal {
 
-}
-vertb {
-    expand: false;
-    children: [ dummy0, mode-switcher, dummy1  ];
-}
-dummy0,  dummy1 {
-    expand: true;
-}
-mode-switcher {
-    expand: false;
-    orientation: vertical;
-    spacing: 0px;
-    border: 0px 0px 0px 0px;
-}
 error-message {
     expand: true;
     background-color: red;
