@@ -1,8 +1,9 @@
 configuration {
-font: "Fantasque Sans Mono Nerd Font Bold 14";
+//font: "Fantasque Sans Mono Nerd Font Bold 14";
 cycle: true;
-modi: [drun,window];
+modi: [drun,window,emoji];
 display-drun: "";
+display-emoji: "😳";
 case-sensitive: false;
 matching: "fuzzy";
 fixed-num-lines: true;
