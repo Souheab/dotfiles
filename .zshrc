@@ -50,11 +50,18 @@ alias icat="kitty +kitten icat"
 alias ls="ls --color=auto"
 alias bat='upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"'
 alias task='nocorrect task'
+alias figlet='nocorrect figlet'
 alias weather="noglob curl https://wttr.in/?0pq"
+alias mpvdisc="bg;disown %1"
+alias cmatrix='unimatrix -n -s 96 -l o'
 #: }}}
 
 #: Environment Variables{{{
 export EDITOR=nvim
+export XDG_DATA_HOME=$HOME/.local/share
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_STATE_HOME=$HOME/.local/state
+export XDG_CACHE_HOME=$HOME/.cache
 #: }}}
 
 #: Plugins{{{
@@ -66,6 +73,6 @@ source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 #lfcd
 source ~/.config/lf/lfcd.sh
-#zsh sudo plugin
+#zsh sudo plugin 
 source /usr/share/zsh/plugins/zsh-sudo/sudo.plugin.zsh 
 #: }}}

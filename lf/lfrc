@@ -118,6 +118,11 @@ cmd zip ${{
     rm -rf $1
 }}
 
+cmd cbcopy ${{
+	set -f
+	copyq write $(xdg-mime query filetype $fx) - < $fx && copyq select 0
+}}
+
 #Bulk rename multiple files
 cmd bulk-rename ${{
     old="$(mktemp)"
@@ -255,3 +260,6 @@ map gd cd ~/Downloads
 map gp cd ~/Pictures
 map gc cd ~/.config
 map gv cd ~/Videos
+
+# My functions
+map Y cbcopy
