@@ -27,7 +27,7 @@ disabled = #707880
 
 [bar/mybar]
 width = 99.1%
-height = 24pt
+height = 21pt
 radius = 0
 offset-x = 6pt
 offset-y = 5

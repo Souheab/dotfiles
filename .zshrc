@@ -54,6 +54,7 @@ alias figlet='nocorrect figlet'
 alias weather="noglob curl https://wttr.in/?0pq"
 alias mpvdisc="bg;disown %1"
 alias cmatrix='unimatrix -n -s 96 -l o'
+alias findp="find -follow -iname"
 #: }}}
 
 #: Environment Variables{{{
