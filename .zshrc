@@ -55,6 +55,7 @@ alias weather="noglob curl https://wttr.in/?0pq"
 alias mpvdisc="bg;disown %1"
 alias cmatrix='unimatrix -n -s 96 -l o'
 alias findp="find -follow -iname"
+alias dict="nocorrect sdcv"
 #: }}}
 
 #: Environment Variables{{{
@@ -63,6 +64,7 @@ export XDG_DATA_HOME=$HOME/.local/share
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_STATE_HOME=$HOME/.local/state
 export XDG_CACHE_HOME=$HOME/.cache
+export STARDICT_DATA_DIR=$XDG_DATA_HOME
 #: }}}
 
 #: Plugins{{{
@@ -77,3 +79,6 @@ source ~/.config/lf/lfcd.sh
 #zsh sudo plugin 
 source /usr/share/zsh/plugins/zsh-sudo/sudo.plugin.zsh 
 #: }}}
+
+#: Path
+export PATH="$HOME/.local/bin:$PATH"
