@@ -552,6 +552,12 @@ This is a literate config of my emacs configuration, to install this simply run 
     :commands (ace-window))
 
   (el-get-bundle zerolfx/copilot.el)
+  (general-define-key
+   :keymaps 'copilot-mode-map
+   :states '(insert normal)
+   "C-l" 'copilot-accept-completion
+   )
+  (use-package editorconfig)
 
                                           ;    (use-package copilot
                                           ;      :general
