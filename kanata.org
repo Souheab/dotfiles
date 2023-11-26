@@ -29,42 +29,25 @@
 
 #+end_src
 
-* Aliases
-** Keys
-
-#+begin_src kbd :tangle yes
-  (defalias
-    cl (multi ctl (layer-toggle control-layer))
-    al (multi lalt (layer-toggle alt-layer))
-    mt (multi lmet (layer-toggle meta-layer))
-    clck (multi ctl mlft)
-    )
-#+end_src
-
-** Apps
-
-#+begin_src kbd :tangle yes
-
-  (defalias
-    dsc (cmd "discord")
-    rym (cmd "rhythmbox")
-    )
-
-#+end_src
-
 * Layers
 ** Main Mode
 
 #+begin_src kbd :tangle yes
+
+  (defalias
+    cl (multi ctl (layer-toggle control-layer))
+    al (multi lalt (layer-toggle alt-layer))
+    )
+  
   (deflayer main
     `
     esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc
     tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
     bspc a    s    d    f    g    h    j    k    l    ;    '    ret
     lsft z    x    c    v    b    n    m    ,    .    /    rsft
-    @cl  @mt  @al            spc            ralt rmet cmp  rctl
+    @cl  lmet  @al            spc            ralt rmet cmp  rctl
 
-    
+
     mlft mrgt mmid mbck ctl
     )
 #+end_src
@@ -136,7 +119,6 @@
 #+end_src
 
 *** Alt Layer
-
 **** Main Alt Layer
 
 #+begin_src kbd :tangle yes
@@ -148,51 +130,13 @@
     rt (multi (release-key lalt) rght)
     clb (multi (release-key lalt) ctl bspc)
     hom (multi (release-key lalt) lsft `)
-
-    ap (multi (release-key lalt) (one-shot 2000 (layer-toggle app-layer)))
     )
 
   (deflayer alt-layer
     _
     _    _    _    _    _    _    _    _    _    _    _    _    _    _
     _    _    @clb _    _    _    _    _    @hom _    _    _    _    _
-    _    @ap  _    _    _    _    @lf  @dn  @up  @rt  _    _    _
-    _    _    _    _    _    _    _    _    _    _    _    _
-    _    _    _                  _          _    _    _    _
-
-
-    _    _    _    _    _
-    )
-
-#+end_src
-
-**** App Layer
-
-#+begin_src kbd :tangle yes
-
-  (deflayer app-layer
-    _
-    _    _    _    _    _    _    _    _    _    _    _    _    _    _
-    _    _    _    _    @rym _    _    _    _    _    _    _    _    _
-    _    _    _    @dsc _    _    _    _    _    _    _    _    _
-    _    _    _    _    _    _    _    _    _    _    _    _
-    _    _    _                  _          _    _    _    _
-
-
-    _    _    _    _    _
-    )
-
-#+end_src
-
-*** Meta Layer
-
-#+begin_src kbd :tangle yes
-
-  (deflayer meta-layer
-    `
-    esc  _    _    _    _    _    _    _    _    _    _    _    _    _
-    _    _    _    _    _    _    _    _    _    _    _    _    _    _
-    _    _    _    _    _    _    _    _    _    _    _    _    _
+    _    _    _    _    _    _    @lf  @dn  @up  @rt  _    _    _
     _    _    _    _    _    _    _    _    _    _    _    _
     _    _    _                  _          _    _    _    _
 
