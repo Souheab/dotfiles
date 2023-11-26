@@ -1242,8 +1242,11 @@ This is a literate config of my emacs configuration, to install this simply run 
   (use-package python
     :mode ("\\.py\\'" . python-ts-mode)
     :custom
-    (python-indent-offset 2)
-    :hook (python-ts-mode . lsp-deferred)
+    (python-indent-offset 4)
+    (lsp-pylsp-server-command "/home/solo/.local/bin/pylsp")
+    :hook ((python-ts-mode . lsp-deferred)
+           (python-ts-mode . (lambda () (setq-local python-indent-offset 4) (setq-local indent-bars-spacing-override 4)))
+           )
     :config
     )
 
