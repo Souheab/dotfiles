@@ -1,0 +1,26 @@
+# Screenshot
+Print
+  flameshot screen -p ~/Pictures/screenshots -c
+
+super + shift + {s,a}
+  flameshot {gui -c, gui}
+
+# rofi 
+super + {p,period,shift + Tab,shift + p}
+  rofi -show {drun -drun-display-format \{name\},emoji,windowcd,power-menu -theme powermenu}
+
+# lock screen
+alt + ctrl + l
+  loginctl lock-session
+
+# show clipboard
+super + c
+  copyq menu
+
+# change window opacity
+alt + {equal,minus}
+  picom-trans -c {+,-}10
+
+# launch apps
+alt + {d,r,e,b,f,t}
+  {discord,rhythmbox,emacsclient -c,firefox,thunar,wezterm btop}
