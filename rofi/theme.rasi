@@ -1,0 +1,65 @@
+@import "colors.rasi"
+
+window {
+    location: center;
+    anchor:   center;
+    transparency: "real";
+    padding: 10px;
+    background-color: @background;
+    spacing: 0;
+    children:  [mainbox];
+    orientation: horizontal;
+    border: 1px 1px 1px 1px;
+    border-color: @border;
+	  width: 30%;
+}
+
+mainbox {
+    spacing: 0;
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    color: @search;
+    padding: 11px 11px 1px 11px;
+    background-color: @background;
+    font: "Lexend Deca 10";
+}
+entry,prompt {
+    text-font: inherit;
+    text-color:inherit;
+}
+
+prompt {
+    padding: 0px 6px 0px 5px;
+}
+
+listview {
+    padding: 8px;
+    background-color: @background;
+    lines: 10;
+}
+
+element {
+    padding: 3px;
+    background-color: transparent;
+    color: @text-unselected;
+    font:inherit;
+}
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
+    padding: 0px 0px 0px 3px;
+}
+element selected.normal {
+	  text-color: @text-selected;
+    background-color: transparent;
+}
+
+error-message {
+    expand: true;
+    background-color: red;
+    border-color: darkred;
+    border: 1px;
+    padding: 1em;
+}

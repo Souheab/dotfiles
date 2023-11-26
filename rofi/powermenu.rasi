@@ -1,0 +1,68 @@
+configuration {
+    show-icons:                 false;
+}
+
+@import "colors.rasi"
+* {
+    font: "JetBrains Mono Nerd Font 10";
+}
+
+
+window {
+    transparency:                "real";
+    location:                    center;
+    anchor:                      center;
+    cursor:                      "default";
+    background-color:            @background;
+    width: 35%;
+}
+
+mainbox {
+    enabled:                     true;
+    spacing:                     15px;
+    margin:                      0px;
+    padding:                     30px;
+    border:                      1px solid;
+    border-radius:               0px;
+    border-color:                #5099ff;
+    background-color:            transparent;
+    children:                    [ "listview" ];
+}
+
+listview {
+    columns:                     4;
+    lines:                       1;
+    cycle:                       true;
+    dynamic:                     true;
+    scrollbar:                   false;
+    layout:                      vertical;
+    reverse:                     false;
+    spacing:                     15px;
+    border-color:                @button-selected;
+    background-color:            transparent;
+    text-color:                  @button-foreground;
+    cursor:                      "default";
+}
+
+element {
+    spacing:                     0px;
+    margin:                      0px;
+    padding:                     40px 10px;
+    border-color:                @button-selected;
+    background-color:            @button-unselected-background;
+    text-color:                  @button-foreground;
+    cursor:                      pointer;
+}
+element-text {
+    font:                        "feather bold 32";
+    background-color:            transparent;
+    text-color:                  inherit;
+    cursor:                      inherit;
+    vertical-align:              0.5;
+    horizontal-align:            0.5;
+}
+
+element selected.normal {
+    background-color:            @button-selected;
+    text-color:                  @background;
+}

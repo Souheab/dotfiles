@@ -1,0 +1,14 @@
+*{
+    background-color: transparent;
+    border: #5099ff;
+    search:  #88cc22;
+    text-unselected: #c0caf5;
+    text-selected: #7aa2f7;
+
+    button-selected: @text-selected;
+    background: #1a1b26;
+    button-unselected-background: #2a2a45;
+    button-foreground:     #FFFFFFFF;
+    transparent: rgba(0,0,0,0);
+    font: "Lexend Deca 10";
+}
