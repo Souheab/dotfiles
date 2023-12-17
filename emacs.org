@@ -958,7 +958,7 @@ This is a literate config of my emacs configuration, to install this simply run 
 
 #+begin_src emacs-lisp
 
-  (setq use-eaf t)
+  (setq use-eaf nil)
   (setq eaf-path "~/.config/emacs/site-lisp/emacs-application-framework/")
 
   (when (and use-eaf (file-directory-p eaf-path))
