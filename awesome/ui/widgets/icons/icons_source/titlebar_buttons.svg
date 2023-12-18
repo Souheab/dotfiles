@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="titlebar_buttons.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="67.151398"
+     inkscape:cx="5.5695043"
+     inkscape:cy="4.2888161"
+     inkscape:window-width="1920"
+     inkscape:window-height="1038"
+     inkscape:window-x="0"
+     inkscape:window-y="42"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:#a633b1;fill-opacity:1;stroke-width:0.641461"
+       id="path236"
+       cx="0.94796467"
+       cy="0.40024415"
+       r="0.20417674"
+       inkscape:export-filename="close_button_unfocused.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000" />
+    <g
+       id="g1026"
+       inkscape:export-filename="close_button_hover.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000">
+      <circle
+         style="fill:#cd11d3;fill-opacity:1;stroke-width:0.641461"
+         id="circle290"
+         cx="1.9506162"
+         cy="0.41161934"
+         r="0.20417674" />
+      <path
+         id="rect454"
+         style="fill:#241c1c;stroke-width:0.330713"
+         d="m 1.8830197,0.32478985 c -0.00324,2.5516e-4 -0.00617,0.001705 -0.00843,0.004166 -0.00604,0.006564 -0.00467,0.0185241 0.00306,0.0269426 l 0.051111,0.055552 -0.05111,0.0558295 c -0.00775,0.008419 -0.00911,0.0206565 -0.00306,0.0272204 0.00604,0.006564 0.017043,0.004805 0.024788,-0.003612 l 0.051365,-0.0555507 0.05111,0.0555518 c 0.00775,0.008419 0.018749,0.0101748 0.024789,0.003612 0.00604,-0.006564 0.00467,-0.0188016 -0.00306,-0.0272204 l -0.051367,-0.0558306 0.051366,-0.0555518 c 0.00775,-0.008419 0.00911,-0.0203785 0.00306,-0.0269426 -0.00604,-0.006564 -0.017043,-0.005085 -0.024789,0.003333 l -0.05111,0.0558296 -0.051366,-0.0558295 c -0.00484,-0.005262 -0.010949,-0.007925 -0.016356,-0.007499 z" />
+    </g>
+    <circle
+       style="fill:#c211d3;fill-opacity:1;stroke-width:0.641461"
+       id="circle1018"
+       cx="1.4598235"
+       cy="0.39933488"
+       r="0.20417674"
+       inkscape:export-filename="close_button_focused.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000" />
+    <g
+       id="g1239"
+       transform="translate(1.0195706,-0.02310132)"
+       inkscape:export-filename="ontop_button_hover.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000">
+      <circle
+         style="fill:#009fff;fill-opacity:1;stroke-width:0.641461"
+         id="circle1020"
+         cx="0.93474233"
+         cy="0.93066591"
+         r="0.20417674" />
+      <path
+         id="rect1080"
+         style="fill:#241c1c;fill-opacity:1;stroke-width:0.435357"
+         d="m 0.93655103,0.82343731 -0.0656291,0.0914673 0.0279053,5.1677e-4 V 1.0378945 h 0.0707967 V 0.91748842 l 0.0289388,5.1676e-4 z" />
+    </g>
+    <circle
+       style="fill:#3992c6;fill-opacity:1;stroke-width:0.641461"
+       id="circle1235"
+       cx="0.9371804"
+       cy="0.89799225"
+       r="0.20417674"
+       inkscape:export-filename="ontop_button_unfocused.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000" />
+    <g
+       id="g1245"
+       transform="translate(0.52707965,-0.00757003)"
+       inkscape:export-filename="ontop_button_focused.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000">
+      <circle
+         style="fill:#009fff;fill-opacity:1;stroke-width:0.641461"
+         id="circle1241"
+         cx="0.93474233"
+         cy="0.93066591"
+         r="0.20417674" />
+    </g>
+    <g
+       id="g1259"
+       transform="translate(1.494715,-0.01161619)"
+       inkscape:export-filename="ontop_button_activated.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000">
+      <circle
+         style="fill:#009fff;fill-opacity:1;stroke-width:0.641461"
+         id="circle1255"
+         cx="0.93474233"
+         cy="0.93066591"
+         r="0.20417674" />
+      <path
+         id="path1257"
+         style="fill:#ffffff;fill-opacity:1;stroke-width:0.435357"
+         d="m 0.93655103,0.82343731 -0.0656291,0.0914673 0.0279053,5.1677e-4 V 1.0378945 h 0.0707967 V 0.91748842 l 0.0289388,5.1676e-4 z" />
+    </g>
+    <g
+       id="g1265"
+       transform="translate(1.9923438,-0.00665932)"
+       inkscape:export-filename="ontop_button_unfocused_activated.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000">
+      <circle
+         style="fill:#3991c6;fill-opacity:1;stroke-width:0.641461"
+         id="circle1261"
+         cx="0.93474233"
+         cy="0.93066591"
+         r="0.20417674" />
+      <path
+         id="path1263"
+         style="fill:#dbdbdb;fill-opacity:1;stroke-width:0.435357"
+         d="m 0.93655103,0.82343731 -0.0656291,0.0914673 0.0279053,5.1677e-4 V 1.0378945 h 0.0707967 V 0.91748842 l 0.0289388,5.1676e-4 z" />
+    </g>
+    <g
+       id="g1480"
+       transform="translate(-0.01681533,0.89144697)"
+       inkscape:export-filename="../../../.config/awesome/ui/bars/modernbar/titlebar_icons/minimize_button_unfocused.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000"
+       style="fill:#59cd72;fill-opacity:1">
+      <circle
+         style="fill:#59cd72;fill-opacity:1;stroke-width:0.641461"
+         id="circle1478"
+         cx="0.93474233"
+         cy="0.93066591"
+         r="0.20417674" />
+    </g>
+    <g
+       id="g982"
+       transform="translate(0.59961365,0.00633306)"
+       inkscape:export-filename="../../../.config/awesome/ui/bars/modernbar/titlebar_icons/minimize_button_hover.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000">
+      <g
+         id="g1484"
+         transform="translate(0.48280439,0.89807135)"
+         inkscape:export-filename="ontop_button_focused.png"
+         inkscape:export-xdpi="3000"
+         inkscape:export-ydpi="3000"
+         style="fill:#46e066;fill-opacity:1">
+        <circle
+           style="fill:#46e066;fill-opacity:1;stroke-width:0.641461"
+           id="circle1482"
+           cx="0.93474233"
+           cy="0.93066591"
+           r="0.20417674" />
+      </g>
+      <rect
+         style="fill:#241c1c;fill-opacity:1;stroke-width:0.365341"
+         id="rect367"
+         width="0.1763179"
+         height="0.05753357"
+         x="1.3293878"
+         y="1.7999704"
+         ry="0.028766785" />
+    </g>
+    <g
+       id="g977"
+       transform="translate(0.54296154,0.91629396)"
+       inkscape:export-filename="ontop_button_focused.png"
+       inkscape:export-xdpi="3000"
+       inkscape:export-ydpi="3000"
+       style="fill:#46e066;fill-opacity:1">
+      <circle
+         style="fill:#46e066;fill-opacity:1;stroke-width:0.641461"
+         id="circle975"
+         cx="0.93474233"
+         cy="0.93066591"
+         r="0.20417674" />
+    </g>
+  </g>
+</svg>
