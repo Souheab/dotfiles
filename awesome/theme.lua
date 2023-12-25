@@ -181,4 +181,7 @@ theme.gtk_theme = "Tokyonight-Dark-BL"
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = nil
 
+theme.battery_popup_bg = theme.container_bg
+theme.battery_popup_font = "Lexend Deca 20"
+
 return theme
