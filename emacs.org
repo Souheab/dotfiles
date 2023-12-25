@@ -551,13 +551,15 @@ This is a literate config of my emacs configuration, to install this simply run 
     (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
     :commands (ace-window))
 
+  ;; Dependency of copilot.el
+  (use-package editorconfig)
+
   (el-get-bundle zerolfx/copilot.el)
   (general-define-key
    :keymaps 'copilot-mode-map
    :states '(insert normal)
    "C-l" 'copilot-accept-completion
    )
-  (use-package editorconfig)
 
                                           ;    (use-package copilot
                                           ;      :general
@@ -2053,4 +2055,11 @@ This is a literate config of my emacs configuration, to install this simply run 
    (server-start)
    )
 
+#+end_src
+
+* Load Machine Specific Emacs Lisp File
+
+#+begin_src emacs-lisp
+  (when (file-exists-p "~/.config/emacs/machine-specific.el")
+    (load "~/.config/emacs/machine-specific.el"))
 #+end_src
