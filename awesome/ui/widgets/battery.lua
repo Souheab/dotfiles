@@ -41,7 +41,7 @@ local function popup()
     {
       {
         text = "OK",
-        font = beautiful.battery_popup_font,
+        font = beautiful.base_font .. " 15",
         widget = wibox.widget.textbox,
         align = "center",
       },
@@ -52,16 +52,20 @@ local function popup()
       right = 30,
     },
     widget = wibox.container.background,
+    bg = "#353550", -- TODO put in theme.lua
+    shape = function(cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, 10)
+    end,
     shape_border_width = 1,
-    shape_border_color = "#ffffff",
+    shape_border_color = "#aaaaaa",
   }
 
 
   local battery_popup_widget = wibox.widget {
     {
       {
-        text = "Battery Low " .. "(" .. battery_value .. "%)" .. ". Plug in your charger",
-        font = beautiful.battery_popup_font,
+        text = "Battery Low " .. "(" .. battery_value .. "%)" .. ", Plug in your charger",
+        font = beautiful.base_font .. " 20",
         widget = wibox.widget.textbox,
       },
       widget = wibox.container.margin,

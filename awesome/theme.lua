@@ -9,6 +9,8 @@ local naughty                                   = require("naughty")
 
 local theme                                     = {}
 
+theme.base_font                                = "Lexend Deca"
+
 theme.font                                      = "Lexend Deca 10"
 
 -- Taglist
@@ -182,6 +184,5 @@ theme.gtk_theme = "Tokyonight-Dark-BL"
 theme.icon_theme = nil
 
 theme.battery_popup_bg = theme.container_bg
-theme.battery_popup_font = "Lexend Deca 20"
 
 return theme
