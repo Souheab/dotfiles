@@ -111,7 +111,7 @@ local function popup()
   end
 
   gears.timer({
-    timeout = 5,
+    timeout = 30,
     call_now = true,
     autostart = true,
     callback = check,
