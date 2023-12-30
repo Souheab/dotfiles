@@ -87,7 +87,7 @@ local function popup()
   local battery_awful_popup = awful.popup {
     widget = battery_popup_widget,
     placement    = awful.placement.centered,
-    ontop = false,
+    ontop = true,
     shape = gears.shape.rectangle,
     visible      = false,
     bg = beautiful.battery_popup_bg,
