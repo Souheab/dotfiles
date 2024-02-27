@@ -1404,7 +1404,7 @@ This is a literate config of my emacs configuration, to install this simply run 
 *** Go
 #+begin_src emacs-lisp
    (use-package go-mode
-     :hook (go-mode . lsp-deferred)
+     :hook (go-mode . s/init-regular-lsp-lang)
      )
 
   (use-package go-guru)
