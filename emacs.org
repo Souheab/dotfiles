@@ -1401,6 +1401,23 @@ This is a literate config of my emacs configuration, to install this simply run 
   (use-package latex-preview-pane)
 #+end_src
 
+*** Go
+#+begin_src emacs-lisp
+   (use-package go-mode
+     :hook (go-mode . lsp-deferred)
+     )
+
+  (use-package go-guru)
+
+   (lsp-register-custom-settings
+  '(("gopls.hints" ((assignVariableTypes . t)
+                    (compositeLiteralFields . t)
+                    (compositeLiteralTypes . t)
+                    (constantValues . t)
+                    (functionTypeParameters . t)
+                    (parameterNames . t)
+                    (rangeVariableTypes . t)))))
+#+end_src
 ** Workspaces
 *** Initialize Workspaces
 
