@@ -1,0 +1,33 @@
+#!/bin/bash
+# Note: btremacsd = Better Emacs Daemon
+
+start_daemon() {
+  Xvfb :99 -screen 0 1920x1080x24 & DISPLAY=:99 EMACS_START_SERVER=t emacs &
+}
+
+kill_daemon() {
+  killall Xvfb
+  kill $(xdotool getwindowpid $(xdotool search --name "emacsserver"))
+}
+
+restart_daemon() {
+  kill_daemon
+  start_daemon
+}
+
+case $1 in
+  -s)
+    start_daemon
+    ;;
+  -k)
+    kill_daemon
+    ;;
+  -r)
+    restart_daemon
+    ;;
+  *)
+    echo "Invalid command-line argument: $1"
+    echo "Usage: betteremacsdaemon -s | -k | -r"
+    exit 1
+    ;;
+esac
