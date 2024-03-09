@@ -42,6 +42,13 @@ This is a literate config of my emacs configuration, to install this simply run 
   esac
 #+end_src
 
+* Early Init
+
+#+begin_src emacs-lisp :tangle ~/.config/emacs/early-init.el
+  (setenv "LSP_USE_PLISTS" "true")
+  (setq lsp-use-plists t)
+#+end_src
+
 * Performance
 
 #+begin_src emacs-lisp
@@ -309,8 +316,8 @@ This is a literate config of my emacs configuration, to install this simply run 
   (defcustom dashboard-link-widgets-definition-list
     '(
       ("recentf"
-       "file-text"
-       "Recently opened files"
+       "history"
+       "Recent files"
        consult-recent-file)
 
       ("project"
@@ -994,75 +1001,104 @@ This is a literate config of my emacs configuration, to install this simply run 
 
 #+begin_src emacs-lisp 
 
-  (defun s/lsp-mode-setup ()
-    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-    (lsp-headerline-breadcrumb-mode)
-    )
-
-  (use-package lsp-mode
-    :commands (lsp lsp-deferred)
-    :init
-    (setq lsp-keymap-prefix "C-c C-l")
-    :hook ((lsp-mode . s/lsp-mode-setup)
-           (lsp-help-mode . s/set-solaire-variable-pitch-font))
-    :custom
-    (lsp-enable-on-type-formatting nil)
-    (lsp-inlay-hint-enable t)
-    :config
-    (lsp-enable-which-key-integration t)
-    (add-to-list 'lsp-language-id-configuration '(js-jsx-mode . "javascriptreact") t)
-    )
-
-  (use-package lsp-ui
-    :custom
-    (lsp-ui-sideline-show-hover nil)
-    :hook (lsp-mode . lsp-ui-mode))
-
-  (use-package company
-    :after prog-mode
-    :hook (prog-mode . company-mode)
-    :bind (:map company-active-map
-                ("<tab>" . company-complete-selection))
-    (:map prog-mode-map
-          ("M-SPC" . company-indent-or-complete-common))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.0)
-                                          ; :config
-    ;; https://company-mode.github.io/manual/Backends.html
-    :config
-    (add-hook 'prog-mode-hook
-              (lambda ()
-                (setq-local company-backends
-                            '((:separate company-capf company-yasnippet)
-                              company-yasnippet)
-                            )))
-    )
-
-
-    (use-package company-box
-      :after company
-      :hook (company-mode . company-box-mode)
+    (defun s/lsp-mode-setup ()
+      (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+      (lsp-headerline-breadcrumb-mode)
       )
 
-    (use-package flycheck
-      :after lsp-mode)
-
-    (use-package yasnippet
-      :bind(
-            :map yas-minor-mode-map
-            ("C-," . yas-expand)
-            ("C-M-SPC" . company-yasnippet)
-            )
+    (use-package lsp-mode
+      :commands (lsp lsp-deferred)
+      :init
+      (setq lsp-keymap-prefix "C-c C-l")
+      :hook ((lsp-mode . s/lsp-mode-setup)
+             (lsp-help-mode . s/set-solaire-variable-pitch-font))
+      :custom
+      (lsp-enable-on-type-formatting nil)
+      (lsp-inlay-hint-enable t)
       :config
-      (yas-global-mode)
+      (lsp-enable-which-key-integration t)
+      (add-to-list 'lsp-language-id-configuration '(js-jsx-mode . "javascriptreact") t)
       )
 
-    (global-company-mode 1)
+  (defun lsp-booster--advice-json-parse (old-fn &rest args)
+    "Try to parse bytecode instead of json."
+    (or
+     (when (equal (following-char) ?#)
+       (let ((bytecode (read (current-buffer))))
+         (when (byte-code-function-p bytecode)
+           (funcall bytecode))))
+     (apply old-fn args)))
+  (advice-add (if (progn (require 'json)
+                         (fboundp 'json-parse-buffer))
+                  'json-parse-buffer
+                'json-read)
+              :around
+              #'lsp-booster--advice-json-parse)
 
-    ;; Quickrun
-    (use-package quickrun
-      :commands (quickrun))
+  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+    "Prepend emacs-lsp-booster command to lsp CMD."
+    (let ((orig-result (funcall old-fn cmd test?)))
+      (if (and (not test?)                             ;; for check lsp-server-present?
+               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+               lsp-use-plists
+               (not (functionp 'json-rpc-connection))  ;; native json-rpc
+               (executable-find "emacs-lsp-booster"))
+          (progn
+            (message "Using emacs-lsp-booster for %s!" orig-result)
+            (cons "emacs-lsp-booster" orig-result))
+        orig-result)))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
+    (use-package lsp-ui
+      :custom
+      (lsp-ui-sideline-show-hover nil)
+      :hook (lsp-mode . lsp-ui-mode))
+
+    (use-package company
+      :after prog-mode
+      :hook (prog-mode . company-mode)
+      :bind (:map company-active-map
+                  ("<tab>" . company-complete-selection))
+      (:map prog-mode-map
+            ("M-SPC" . company-indent-or-complete-common))
+      :custom
+      (company-minimum-prefix-length 1)
+      (company-idle-delay 0.0)
+                                            ; :config
+      ;; https://company-mode.github.io/manual/Backends.html
+      :config
+      (add-hook 'prog-mode-hook
+                (lambda ()
+                  (setq-local company-backends
+                              '((:separate company-capf company-yasnippet)
+                                company-yasnippet)
+                              )))
+      )
+
+
+      (use-package company-box
+        :after company
+        :hook (company-mode . company-box-mode)
+        )
+
+      (use-package flycheck
+        :after lsp-mode)
+
+      (use-package yasnippet
+        :bind(
+              :map yas-minor-mode-map
+              ("C-," . yas-expand)
+              ("C-M-SPC" . company-yasnippet)
+              )
+        :config
+        (yas-global-mode)
+        )
+
+      (global-company-mode 1)
+
+      ;; Quickrun
+      (use-package quickrun
+        :commands (quickrun))
 
 
 #+end_src
