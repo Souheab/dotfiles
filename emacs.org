@@ -994,74 +994,75 @@ This is a literate config of my emacs configuration, to install this simply run 
 
 #+begin_src emacs-lisp 
 
-    (defun s/lsp-mode-setup ()
-      (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-      (lsp-headerline-breadcrumb-mode)
+  (defun s/lsp-mode-setup ()
+    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    (lsp-headerline-breadcrumb-mode)
+    )
+
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :init
+    (setq lsp-keymap-prefix "C-c C-l")
+    :hook ((lsp-mode . s/lsp-mode-setup)
+           (lsp-help-mode . s/set-solaire-variable-pitch-font))
+    :custom
+    (lsp-enable-on-type-formatting nil)
+    (lsp-inlay-hint-enable t)
+    :config
+    (lsp-enable-which-key-integration t)
+    (add-to-list 'lsp-language-id-configuration '(js-jsx-mode . "javascriptreact") t)
+    )
+
+  (use-package lsp-ui
+    :custom
+    (lsp-ui-sideline-show-hover nil)
+    :hook (lsp-mode . lsp-ui-mode))
+
+  (use-package company
+    :after prog-mode
+    :hook (prog-mode . company-mode)
+    :bind (:map company-active-map
+                ("<tab>" . company-complete-selection))
+    (:map prog-mode-map
+          ("M-SPC" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.0)
+                                          ; :config
+    ;; https://company-mode.github.io/manual/Backends.html
+    :config
+    (add-hook 'prog-mode-hook
+              (lambda ()
+                (setq-local company-backends
+                            '((:separate company-capf company-yasnippet)
+                              company-yasnippet)
+                            )))
+    )
+
+
+    (use-package company-box
+      :after company
+      :hook (company-mode . company-box-mode)
       )
 
-    (use-package lsp-mode
-      :commands (lsp lsp-deferred)
-      :init
-      (setq lsp-keymap-prefix "C-c C-l")
-      :hook ((lsp-mode . s/lsp-mode-setup)
-             (lsp-help-mode . s/set-solaire-variable-pitch-font))
-      :custom
-      (lsp-enable-on-type-formatting nil)
-      (lsp-inlay-hint-enable t)
+    (use-package flycheck
+      :after lsp-mode)
+
+    (use-package yasnippet
+      :bind(
+            :map yas-minor-mode-map
+            ("C-," . yas-expand)
+            ("C-M-SPC" . company-yasnippet)
+            )
       :config
-      (lsp-enable-which-key-integration t)
-      (add-to-list 'lsp-language-id-configuration '(js-jsx-mode . "javascriptreact") t)
+      (yas-global-mode)
       )
 
-    (use-package lsp-ui
-      :custom
-      (lsp-ui-sideline-show-hover nil)
-      :hook (lsp-mode . lsp-ui-mode))
+    (global-company-mode 1)
 
-    (use-package company
-      :after prog-mode
-      :hook (prog-mode . company-mode)
-      :bind (:map company-active-map
-                  ("<tab>" . company-complete-selection))
-      (:map prog-mode-map
-            ("<tab>" . company-indent-or-complete-common))
-      :custom
-      (company-minimum-prefix-length 1)
-      (company-idle-delay 0.0)
-                                            ; :config
-      ;; https://company-mode.github.io/manual/Backends.html
-      :config
-      (add-hook 'prog-mode-hook
-                (lambda ()
-                  (setq-local company-backends
-                              '((:separate company-capf company-yasnippet)
-                                company-yasnippet)
-                              )))
-      )
-
-
-      (use-package company-box
-        :after company
-        :hook (company-mode . company-box-mode)
-        )
-
-      (use-package flycheck
-        :after lsp-mode)
-
-      (use-package yasnippet
-        :bind(
-              :map yas-minor-mode-map
-              ("M-SPC" . yas-expand)
-              ("C-M-SPC" . company-yasnippet))
-        :config
-        (yas-global-mode)
-        )
-
-      (global-company-mode 1)
-
-      ;; Quickrun
-      (use-package quickrun
-        :commands (quickrun))
+    ;; Quickrun
+    (use-package quickrun
+      :commands (quickrun))
 
 
 #+end_src
@@ -1245,11 +1246,20 @@ This is a literate config of my emacs configuration, to install this simply run 
     :mode ("\\.py\\'" . python-ts-mode)
     :custom
     (python-indent-offset 4)
+    (lsp-pylsp-plugins-flake8-enabled nil)
+    (lsp-pylsp-plugins-pydocstyle-enabled nil)
     (lsp-pylsp-server-command "/home/solo/.local/bin/pylsp")
     :hook ((python-ts-mode . lsp-deferred)
            (python-ts-mode . (lambda () (setq-local python-indent-offset 4) (setq-local indent-bars-spacing-override 4)))
            )
     :config
+    )
+
+  (use-package pyvenv
+    :custom
+    (pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+    :config
+    (pyvenv-mode)
     )
 
 #+end_src
