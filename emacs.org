@@ -3,6 +3,7 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ~/.config/emacs/init.el
 
 * Introduction
+
 This is a literate config of my emacs configuration, to install this simply run ~M-x org-babel-tangle-file~ or ~C-c C-v f~. This config assumes your emacs config folder is =~/.config/emacs=. This emacs config also comes with a daemon script that I have made, and I find it to be better than the ~emacs --daemon~ comand for a variety of reasons that I won't list here
 
 * Daemon Script
@@ -40,13 +41,6 @@ This is a literate config of my emacs configuration, to install this simply run 
       exit 1
       ;;
   esac
-#+end_src
-
-* Early Init
-
-#+begin_src emacs-lisp :tangle ~/.config/emacs/early-init.el
-  ;(setenv "LSP_USE_PLISTS" "true")
-  ;(setq lsp-use-plists t)
 #+end_src
 
 * Performance
@@ -95,20 +89,21 @@ This is a literate config of my emacs configuration, to install this simply run 
 ** Auto Tangle
 
 #+begin_src emacs-lisp 
-    ;; Automatically tangle our Emacs.org config file when we save it
-    (defun s/org-babel-tangle-config ()
-      "If in emacs.org configuration file, run `org-babel-tangle' on it"
-      (when (or (string-equal (buffer-file-name)
-                          (expand-file-name "~/.config/emacs.org"))
-                (string-equal (buffer-file-name)
-                              (expand-file-name "~/.config/dotfiles/emacs.org")))
-        ;; Dynamic scoping to the rescue
-        (let ((org-confirm-babel-evaluate nil))
-          (org-babel-tangle))))
+  ;; Automatically tangle our Emacs.org config file when we save it
+  (defun s/org-babel-tangle-config ()
+    "If in emacs.org configuration file, run `org-babel-tangle' on it"
+    (when (or (string-equal (buffer-file-name)
+                        (expand-file-name "~/.config/emacs.org"))
+              (string-equal (buffer-file-name)
+                            (expand-file-name "~/.config/dotfiles/emacs.org")))
+      ;; Dynamic scoping to the rescue
+      (let ((org-confirm-babel-evaluate nil))
+        (org-babel-tangle))))
 
 
-    (add-hook 'org-mode-hook
-              (lambda () (add-hook 'after-save-hook #'s/org-babel-tangle-config)))
+
+  (add-hook 'org-mode-hook
+            (lambda () (add-hook 'after-save-hook #'s/org-babel-tangle-config)))
 
 #+end_src
 
@@ -736,6 +731,7 @@ This is a literate config of my emacs configuration, to install this simply run 
     (s/org-font-setup)
     (visual-line-mode 1)
     (valign-mode 1)
+    (org-pretty-mode 1)
     )
 
   (defun s/org-font-setup ()
@@ -941,6 +937,27 @@ This is a literate config of my emacs configuration, to install this simply run 
       :after org)
 #+end_src
 
+** Org Pretty Mode
+
+#+begin_src emacs-lisp
+  (define-minor-mode org-pretty-mode
+    "Hides emphasis markers and toggles pretty entities."
+    :init-value nil
+    :lighter " *"
+    :group 'evil-org
+    (setq org-hide-emphasis-markers org-pretty-mode)
+    (org-toggle-pretty-entities)
+    (with-silent-modifications
+      ;; In case the above un-align tables
+      (org-table-map-tables 'org-table-align t))
+    (if org-pretty-mode
+        (set-face-foreground 'org-block-begin-line (face-attribute 'org-block-begin-line :background))
+        (set-face-foreground 'org-block-begin-line (face-attribute 'font-lock-comment-face :foreground))
+        )
+    )
+
+#+end_src
+
 * Markdown
 
 #+begin_src emacs-lisp 
@@ -966,7 +983,6 @@ This is a literate config of my emacs configuration, to install this simply run 
 * EAF
 
 #+begin_src emacs-lisp
-
   (setq use-eaf nil)
   (setq eaf-path "~/.config/emacs/site-lisp/emacs-application-framework/")
 
@@ -1001,104 +1017,80 @@ This is a literate config of my emacs configuration, to install this simply run 
 
 #+begin_src emacs-lisp 
 
-    (defun s/lsp-mode-setup ()
-      (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-      (lsp-headerline-breadcrumb-mode)
+  (defun s/lsp-mode-setup ()
+    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    (lsp-headerline-breadcrumb-mode)
+    )
+
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :init
+    (setq lsp-keymap-prefix "C-c C-l")
+    :hook ((lsp-mode . s/lsp-mode-setup)
+           (lsp-help-mode . s/set-solaire-variable-pitch-font))
+    :custom
+    (lsp-enable-on-type-formatting nil)
+    (lsp-inlay-hint-enable t)
+    :config
+    (lsp-enable-which-key-integration t)
+    (add-to-list 'lsp-language-id-configuration '(js-jsx-mode . "javascriptreact") t)
+    )
+
+
+  ;; TODO: Add LSP Booster: Once plists are fixed in lsp-mode
+  ;; https://github.com/blahgeek/emacs-lsp-booster
+  ;; See https://github.com/emacs-lsp/lsp-mode/issues/4325
+
+  (use-package lsp-ui
+    :custom
+    (lsp-ui-sideline-show-hover nil)
+    :hook (lsp-mode . lsp-ui-mode))
+
+  (use-package company
+    :after prog-mode
+    :hook (prog-mode . company-mode)
+    :bind (:map company-active-map
+                ("<tab>" . company-complete-selection))
+    (:map prog-mode-map
+          ("M-SPC" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.0)
+                                          ; :config
+    ;; https://company-mode.github.io/manual/Backends.html
+    :config
+    (add-hook 'prog-mode-hook
+              (lambda ()
+                (setq-local company-backends
+                            '((:separate company-capf company-yasnippet)
+                              company-yasnippet)
+                            )))
+    )
+
+
+    (use-package company-box
+      :after company
+      :hook (company-mode . company-box-mode)
       )
 
-    (use-package lsp-mode
-      :commands (lsp lsp-deferred)
-      :init
-      (setq lsp-keymap-prefix "C-c C-l")
-      :hook ((lsp-mode . s/lsp-mode-setup)
-             (lsp-help-mode . s/set-solaire-variable-pitch-font))
-      :custom
-      (lsp-enable-on-type-formatting nil)
-      (lsp-inlay-hint-enable t)
+    (use-package flycheck
+      :after lsp-mode)
+
+    (use-package yasnippet
+      :bind(
+            :map yas-minor-mode-map
+            ("C-," . yas-expand)
+            ("C-M-SPC" . company-yasnippet)
+            )
       :config
-      (lsp-enable-which-key-integration t)
-      (add-to-list 'lsp-language-id-configuration '(js-jsx-mode . "javascriptreact") t)
+      (yas-global-mode)
       )
 
-  ;; (defun lsp-booster--advice-json-parse (old-fn &rest args)
-  ;;   "Try to parse bytecode instead of json."
-  ;;   (or
-  ;;    (when (equal (following-char) ?#)
-  ;;      (let ((bytecode (read (current-buffer))))
-  ;;        (when (byte-code-function-p bytecode)
-  ;;          (funcall bytecode))))
-  ;;    (apply old-fn args)))
-  ;; (advice-add (if (progn (require 'json)
-  ;;                        (fboundp 'json-parse-buffer))
-  ;;                 'json-parse-buffer
-  ;;               'json-read)
-  ;;             :around
-  ;;             #'lsp-booster--advice-json-parse)
+    (global-company-mode 1)
 
-  ;; (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  ;;   "Prepend emacs-lsp-booster command to lsp CMD."
-  ;;   (let ((orig-result (funcall old-fn cmd test?)))
-  ;;     (if (and (not test?)                             ;; for check lsp-server-present?
-  ;;              (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-  ;;              lsp-use-plists
-  ;;              (not (functionp 'json-rpc-connection))  ;; native json-rpc
-  ;;              (executable-find "emacs-lsp-booster"))
-  ;;         (progn
-  ;;           (message "Using emacs-lsp-booster for %s!" orig-result)
-  ;;           (cons "emacs-lsp-booster" orig-result))
-  ;;       orig-result)))
-  ;; (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
-
-    (use-package lsp-ui
-      :custom
-      (lsp-ui-sideline-show-hover nil)
-      :hook (lsp-mode . lsp-ui-mode))
-
-    (use-package company
-      :after prog-mode
-      :hook (prog-mode . company-mode)
-      :bind (:map company-active-map
-                  ("<tab>" . company-complete-selection))
-      (:map prog-mode-map
-            ("M-SPC" . company-indent-or-complete-common))
-      :custom
-      (company-minimum-prefix-length 1)
-      (company-idle-delay 0.0)
-                                            ; :config
-      ;; https://company-mode.github.io/manual/Backends.html
-      :config
-      (add-hook 'prog-mode-hook
-                (lambda ()
-                  (setq-local company-backends
-                              '((:separate company-capf company-yasnippet)
-                                company-yasnippet)
-                              )))
-      )
-
-
-      (use-package company-box
-        :after company
-        :hook (company-mode . company-box-mode)
-        )
-
-      (use-package flycheck
-        :after lsp-mode)
-
-      (use-package yasnippet
-        :bind(
-              :map yas-minor-mode-map
-              ("C-," . yas-expand)
-              ("C-M-SPC" . company-yasnippet)
-              )
-        :config
-        (yas-global-mode)
-        )
-
-      (global-company-mode 1)
-
-      ;; Quickrun
-      (use-package quickrun
-        :commands (quickrun))
+    ;; Quickrun
+    (use-package quickrun
+      :commands (quickrun))
 
 
 #+end_src
@@ -1107,6 +1099,7 @@ This is a literate config of my emacs configuration, to install this simply run 
 
 #+begin_src emacs-lisp
   (use-package dap-mode)
+  (setq dap-default-terminal-kind "external")
 #+end_src
 
 ** Treemacs
@@ -1356,7 +1349,6 @@ This is a literate config of my emacs configuration, to install this simply run 
 #+end_src
 
 *** Web dev
-
 **** HTML
 
 #+begin_src emacs-lisp
@@ -1441,22 +1433,31 @@ This is a literate config of my emacs configuration, to install this simply run 
 #+end_src
 
 *** Go
+
 #+begin_src emacs-lisp
    (use-package go-mode
+     :mode ("\\.go\\'" . go-mode)
      :hook (go-mode . s/init-regular-lsp-lang)
      )
 
-  (use-package go-guru)
+  (use-package go-guru
+    :commands (go-guru-describe)
+    )
 
    (lsp-register-custom-settings
-  '(("gopls.hints" ((assignVariableTypes . t)
-                    (compositeLiteralFields . t)
-                    (compositeLiteralTypes . t)
-                    (constantValues . t)
-                    (functionTypeParameters . t)
-                    (parameterNames . t)
-                    (rangeVariableTypes . t)))))
+    '(("gopls.hints" ((assignVariableTypes . t)
+                      (compositeLiteralFields . t)
+                      (compositeLiteralTypes . t)
+                      (constantValues . t)
+                      (functionTypeParameters . t)
+                      (parameterNames . t)
+                      (rangeVariableTypes . t)))))
+
+  (define-key go-mode-map (kbd "<normal-state> g d") nil)
+
+  (require 'dap-dlv-go)
 #+end_src
+
 ** Workspaces
 *** Initialize Workspaces
 
@@ -1862,6 +1863,11 @@ This is a literate config of my emacs configuration, to install this simply run 
    "b" nil
    "bk" 'kill-buffer-and-window
    "a" 'ace-window)
+
+  (general-define-key
+   :prefix-map 'evil-motion-state-map
+   "gh" 's/dwim-help-at-point
+   )
 
   (general-define-key
    :prefix-map 'org-roam-map

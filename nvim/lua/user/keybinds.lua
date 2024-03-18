@@ -27,4 +27,4 @@ keymap("n", "<C-k>", "<C-w>k", opts)
 keymap("n", "<C-l>", "<C-w>l", opts)
 
 -- Remove highlight
-keymap("n", "<leader>n" "<cmd>noh<cr>", opts)
+keymap("n", "<leader>n", "<cmd>noh<cr>", opts)
