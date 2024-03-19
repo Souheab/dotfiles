@@ -125,6 +125,7 @@ export PATH="$HOME/.config/emacs/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/bin/my_programs:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
+export GOPATH="$HOME/.go"
 export DICPATH="/home/solo/.local/share/dict"
 #: }}}
 
