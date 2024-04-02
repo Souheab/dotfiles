@@ -1,0 +1,17 @@
+[status]
+separator_open = ""
+separator_close = ""
+mode_normal = {bg = "reset", fg = "blue" , bold = true , reversed = true}
+mode_select = {bg = "reset", fg = "red" , bold = true , reversed = true}
+mode_unset = {bg = "reset", fg = "red" , bold = true , reversed = true}
+separator_style = {bg = "reset", fg = "gray", reversed = true}
+
+[icon]
+prepend_rules = [
+  { name = "*.org", text = "", fg = "#ffffff"},
+  { name = "*.tex", text = "", fg = "#ffffff"}
+]
+
+append_rules = [
+  { name = "*", text = "", fg = "#ffffff"}
+]
