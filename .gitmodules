@@ -1,3 +1,0 @@
-[submodule "relative-motions.yazi"]
-           path = yazi/plugins/relative-motions.yazi
-           link = https://github.com/dedukun/relative-motions.yazi.git
