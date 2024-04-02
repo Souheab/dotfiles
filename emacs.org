@@ -1458,6 +1458,10 @@ This is a literate config of my emacs configuration, to install this simply run 
   (require 'dap-dlv-go)
 #+end_src
 
+*** Fish shell
+#+begin_src emacs-lisp
+ (setq fish-indent-offset 2)
+#+end_src
 ** Workspaces
 *** Initialize Workspaces
 

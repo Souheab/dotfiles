@@ -23,4 +23,4 @@ alt + {equal,minus}
 
 # launch apps
 alt + {d,r,e,b,f,t}
-  {discord,rhythmbox,emacsclient -c,firefox,thunar,wezterm btop}
+  {discord,rhythmbox,emacsclient -c,firefox,wezterm -e yazi,wezterm -e btop}
