@@ -1,4 +1,4 @@
-require("relative-motions"):setup({ show_numbers = "relative_absolute", show_motion = true })
+require("relative-motions"):setup({ show_numbers = "none", show_motion = true })
 
 
 function Manager:render(area)
