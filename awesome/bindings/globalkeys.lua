@@ -171,10 +171,10 @@ awful.keyboard.append_global_keybindings({
 
   -- Screen brightness
   awful.key({}, "XF86MonBrightnessUp", function()
-    os.execute("xbacklight -inc 10")
+    os.execute("xbacklight -inc 5")
   end, { description = "+10%", group = "hotkeys" }),
   awful.key({}, "XF86MonBrightnessDown", function()
-    os.execute("xbacklight -dec 10")
+    os.execute("xbacklight -dec 5")
   end, { description = "-10%", group = "hotkeys" }),
 
   -- Toggle systray
