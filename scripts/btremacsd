@@ -7,7 +7,7 @@ start_daemon() {
 
 kill_daemon() {
   killall Xvfb
-  kill $(xdotool getwindowpid $(xdotool search --name "emacsserver"))
+  kill "$(xdotool getwindowpid "$(xdotool search --name "emacsserver")")"
 }
 
 restart_daemon() {

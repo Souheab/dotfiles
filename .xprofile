@@ -7,15 +7,16 @@ if [ "$XDG_CURRENT_DESKTOP" != "GNOME" ]; then
   light-locker &
   copyq &
   ~/.local/bin/btremacsd -r
-  ~/.cargo/bin/kanata -c /home/solo/.config/kanata.kbd &
+  ~/.cargo/bin/kanata -c ~/.config/kanata.kbd &
   /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
   export QT_QPA_PLATFORMTHEME=qt5ct
 
-  touch $HOME/.dbus/Xdbus
-  chmod 600 $HOME/.dbus/Xdbus
-  env | grep DBUS_SESSION_BUS_ADDRESS > $HOME/.dbus/Xdbus
-  echo 'export DBUS_SESSION_BUS_ADDRESS' >> $HOME/.dbus/Xdbus
+  touch "$HOME"/.dbus/Xdbus
+  chmod 600 "$HOME"/.dbus/Xdbus
+  env | grep DBUS_SESSION_BUS_ADDRESS > "$HOME"/.dbus/Xdbus
+  echo 'export DBUS_SESSION_BUS_ADDRESS' >> "$HOME"/.dbus/Xdbus
 
   # machine specific xprofile for setting stuff like displays
-  source ~/.xprofile-machinespecific
+  #shellcheck disable=SC1090
+  . ~/.xprofile-machinespecific
 fi
