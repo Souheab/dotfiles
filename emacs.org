@@ -72,8 +72,8 @@ This is a literate config of my emacs configuration, to install this simply run 
 
     (setq org-agenda-files
           '(
-            "~/Documents/org/planning/daily.org"
-            "~/Documents/org/planning/university.org"
+            "~/Documents/org/agenda/daily.org"
+            "~/Documents/org/agenda/university.org"
             ))
 
 #+end_src
@@ -741,6 +741,8 @@ This is a literate config of my emacs configuration, to install this simply run 
                             '(("^ *\\([-]\\) "
                                (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
+    (setq documents-font "Lexend Deca")
+
     ;; Set faces for heading levels
     (dolist (face '((org-level-1 . 1.2)
                     (org-level-2 . 1.1)
@@ -751,7 +753,10 @@ This is a literate config of my emacs configuration, to install this simply run 
                     (org-level-7 . 0.85)
                     (org-level-8 . 1.8)))
       (set-face-attribute (car face) nil
-                          :font "Lexend Deca" :weight 'regular :height (cdr face)))
+                          :font documents-font :weight 'regular :height (cdr face)))
+
+
+    (set-face-attribute 'variable-pitch nil :font documents-font :weight 'regular)
 
     (set-face-attribute 'org-table nil :font "Lexend Deca")
 
@@ -961,7 +966,6 @@ This is a literate config of my emacs configuration, to install this simply run 
 * Markdown
 
 #+begin_src emacs-lisp 
-  (set-face-attribute 'variable-pitch nil :font "Lexend Deca" :weight 'regular)
 
   (use-package markdown-mode
     :defer t
@@ -1382,33 +1386,41 @@ This is a literate config of my emacs configuration, to install this simply run 
 **** JS/JSX/TS/TSX
 
 #+begin_src emacs-lisp
-    (customize-set-variable 'js-indent-level standard-indent)
+  (customize-set-variable 'js-indent-level standard-indent)
 
 
-    (use-package npm-mode
-      :commands (npm-mode))
+  (use-package npm-mode
+    :commands (npm-mode))
 
 
-    (use-package prettier-js
-      :commands (prettier-js-mode))
+  (use-package prettier-js
+    :commands (prettier-js-mode))
 
 
-    (use-package js2-mode
-      :mode "\\.js\\'"
-      :custom
-      (js2-strict-missing-semi-warning nil))
+  (use-package js2-mode
+    :mode "\\.js\\'"
+    :custom
+    (js2-strict-missing-semi-warning nil))
 
-    (use-package rjsx-mode
-      :after (js2-mode)
-      :mode "\\.jsx\\'")
+  (use-package rjsx-mode
+    :after (js2-mode)
+    :mode "\\.jsx\\'")
 
-    ;; typescript stuff
-    (use-package typescript-ts-mode
-      :mode (("\\.ts\\'" . typescript-ts-mode) ("\\.tsx\\'" . tsx-ts-mode))
-      :hook
-      ((typescript-ts-mode tsx-ts-mode) .
-       (lambda () (lsp-deferred) (prettier-js-mode)))
-      )
+  ;; typescript stuff
+  (use-package typescript-ts-mode
+    :mode (("\\.ts\\'" . typescript-ts-mode) ("\\.tsx\\'" . tsx-ts-mode))
+    :hook
+    ((typescript-ts-mode tsx-ts-mode) .
+     (lambda () (lsp-deferred) (prettier-js-mode)))
+    )
+
+  (general-define-key
+   :keymaps '(tsx-ts-mode-map typescript-ts-mode-map)
+   :states 'insert
+   "M-m" 'emmet-expand-yas
+   )
+
+  (add-to-list 'emmet-jsx-major-modes 'tsx-ts-mode)
 
     #+end_src
 
