@@ -4,7 +4,7 @@
 
 * Introduction
 
-This is a literate config of my emacs configuration, to install this simply run ~M-x org-babel-tangle-file~ or ~C-c C-v f~. This config assumes your emacs config folder is =~/.config/emacs=. This emacs config also comes with a daemon script that I have made, and I find it to be better than the ~emacs --daemon~ comand for a variety of reasons that I won't list here
+This is a literate config of my emacs configuration, to install this simply run ~M-x org-babel-tangle-file~ or ~C-c C-v f~. This config assumes your emacs config folder is =~/.config/emacs=. This emacs config also comes with a daemon script that I have made, and I find it to be better than the ~emacs --daemon~ comand since it provides more consistent behavior with the behavior when I launch emacs normally
 
 * Daemon Script
 
