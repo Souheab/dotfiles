@@ -3,9 +3,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
--- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
-  -- buttons for the titlebar
   local buttons = gears.table.join(
     awful.button({}, 1, function()
       c:emit_signal("request::activate", "titlebar", { raise = true })
