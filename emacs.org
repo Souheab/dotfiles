@@ -72,7 +72,7 @@ This is a literate config of my emacs configuration, to install this simply run 
 
     (setq org-agenda-files
           '(
-            "~/Documents/org/agenda/daily.org"
+            "~/Documents/org/agenda/planned.org"
             "~/Documents/org/agenda/university.org"
             ))
 
@@ -1281,9 +1281,14 @@ This is a literate config of my emacs configuration, to install this simply run 
     (python-indent-offset 4)
     (lsp-pylsp-plugins-flake8-enabled nil)
     (lsp-pylsp-plugins-pydocstyle-enabled nil)
+    (lsp-pylsp-plugins-pylint-enabled t)
     (lsp-pylsp-server-command "/home/solo/.local/bin/pylsp")
     :hook ((python-ts-mode . lsp-deferred)
-           (python-ts-mode . (lambda () (setq-local python-indent-offset 4) (setq-local indent-bars-spacing-override 4)))
+           (python-ts-mode .
+                           (lambda () (setq-local python-indent-offset 4)
+                             (setq-local indent-bars-spacing-override 4)
+                             (copilot-mode 1)
+                             ))
            )
     :config
     )
@@ -1370,13 +1375,18 @@ This is a literate config of my emacs configuration, to install this simply run 
 **** CSS
 
 #+begin_src emacs-lisp
-  
+
   (customize-set-variable 'css-indent-offset standard-indent)
 
   (use-package css-mode
     :mode "\\.css\\'")
 
-
+   (use-package lsp-tailwindcss
+       :init
+       (setq lsp-tailwindcss-add-on-mode t)
+       :custom
+       (lsp-tailwindcss-suggestions nil)
+       )
 
   (add-hook 'html-mode-hook #'(lambda () (emmet-mode 1) (lsp-mode 1)))
 
@@ -1411,7 +1421,11 @@ This is a literate config of my emacs configuration, to install this simply run 
     :mode (("\\.ts\\'" . typescript-ts-mode) ("\\.tsx\\'" . tsx-ts-mode))
     :hook
     ((typescript-ts-mode tsx-ts-mode) .
-     (lambda () (lsp-deferred) (prettier-js-mode)))
+     (lambda () (lsp-deferred)
+       ; Disabled for now cus it slows stuff down too much
+       ;(prettier-js-mode)
+       (copilot-mode 1)
+       ))
     )
 
   (general-define-key
@@ -1471,9 +1485,11 @@ This is a literate config of my emacs configuration, to install this simply run 
 #+end_src
 
 *** Fish shell
+
 #+begin_src emacs-lisp
  (setq fish-indent-offset 2)
 #+end_src
+
 ** Workspaces
 *** Initialize Workspaces
 
