@@ -1428,6 +1428,9 @@ This is a literate config of my emacs configuration, to install this simply run 
        ))
     )
 
+  (el-get-bundle davidarenas/prisma-mode)
+  (load-file "~/.config/emacs/el-get/prisma-mode/prisma-mode.el")
+
   (general-define-key
    :keymaps '(tsx-ts-mode-map typescript-ts-mode-map)
    :states 'insert

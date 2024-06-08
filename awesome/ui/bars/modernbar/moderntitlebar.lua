@@ -3,6 +3,8 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
+local titlebar_border_radius <const> = 0
+
 client.connect_signal("request::titlebars", function(c)
   local buttons = gears.table.join(
     awful.button({}, 1, function()
@@ -64,7 +66,7 @@ client.connect_signal("request::titlebars", function(c)
     bg = beautiful.real_titlebar_bg,
     widget = wibox.container.background,
     shape = function(cr, width, height)
-      gears.shape.partially_rounded_rect(cr, width, height, true, true, false, false, 0)
+      gears.shape.partially_rounded_rect(cr, width, height, true, true, false, false, titlebar_border_radius)
     end,
   })
 end)

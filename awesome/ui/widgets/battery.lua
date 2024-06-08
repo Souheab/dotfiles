@@ -32,9 +32,6 @@ end
 local function popup()
   local battery_value = get_battery_percentage()
 
-  -- local screen_width = awful.screen.focused().workarea.width;
-  -- local screen_height = awful.screen.focused().workarea.height;
-
   local battery_popup = {}
 
   local battery_ok_button = wibox.widget {
