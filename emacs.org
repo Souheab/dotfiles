@@ -508,10 +508,6 @@ This is a literate config of my emacs configuration, to install this simply run 
                clm/open-command-log-buffer
                clm/toggle-command-log-buffer))
 
-  (use-package vterm
-    :commands (vterm)
-    )
-
   (use-package undohist
     :config
     (undohist-initialize))
@@ -589,7 +585,6 @@ This is a literate config of my emacs configuration, to install this simply run 
           help-mode
           helpful-mode
           compilation-mode
-          vterm-mode
           ))
   (popper-mode +1)
   (popper-echo-mode +1))                ; For echo area hints
