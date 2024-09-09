@@ -74,13 +74,13 @@ This is a literate config of my emacs configuration, to install this simply run 
 ** Org Agenda Files
 
 #+begin_src emacs-lisp :tangle ~/.config/emacs/custom.el
-    (setq org-directory "~/Documents/org")
-
-    (setq org-agenda-files
-          '(
-            "~/Documents/org/agenda/planned.org"
-            "~/Documents/org/agenda/university.org"
-            ))
+;    (setq org-directory "~/Documents/org")
+;
+;    (setq org-agenda-files
+;          '(
+;            "~/Documents/org/agenda/planned.org"
+;            "~/Documents/org/agenda/university.org"
+;            ))
 #+end_src
 
 ** Load Custom Variables
@@ -284,20 +284,6 @@ This is a literate config of my emacs configuration, to install this simply run 
 *** Doom stuff
 
 #+begin_src emacs-lisp 
-  ;; Doom Themes
-  (use-package doom-themes
-    :config
-    ;; Global settings (defaults)
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-          doom-themes-enable-italic t) ; if nil, italics is universaly disabled
-    (doom-themes-neotree-config)
-    ;; or for treemacs users
-    (setq doom-themes-treemacs-theme "doom-atom")
-    (doom-themes-treemacs-config)
-    ;; Corrects (and improves) org-mode's native fontification.
-    (doom-themes-org-config)
-    (load-theme 'doom-tokyo-night t)
-    )
 
   (use-package all-the-icons
     :if (display-graphic-p)
@@ -313,6 +299,26 @@ This is a literate config of my emacs configuration, to install this simply run 
     (set-face-attribute 'doom-modeline nil
                         :family "Lexend Deca")
     )
+#+end_src
+*** Themes
+
+#+begin_src emacs-lisp
+  ;; Doom Themes
+  (use-package doom-themes
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universaly disabled
+    (doom-themes-neotree-config)
+    ;; or for treemacs users
+    (setq doom-themes-treemacs-theme "doom-atom")
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config)
+    (load-theme 'doom-tokyo-night t)
+    )
+
+  (use-package kanagawa-theme)
 #+end_src
 
 *** Dashboard
@@ -539,8 +545,7 @@ This is a literate config of my emacs configuration, to install this simply run 
 
   (use-package projectile
     :config
-    (whenserver
-     (projectile-mode)) ;; running this SLOWs down emacs startup that's why
+     (projectile-mode) ;; running this SLOWs down emacs startup that's why
     )           ;; wrapped around (when)
 
   (use-package projectile-ripgrep
@@ -1025,6 +1030,7 @@ This is a literate config of my emacs configuration, to install this simply run 
     :custom
     (lsp-enable-on-type-formatting nil)
     (lsp-inlay-hint-enable t)
+    (lsp-update-inlay-hints-on-scroll nil)
     :config
     (lsp-enable-which-key-integration t)
     (add-to-list 'lsp-language-id-configuration '(js-jsx-mode . "javascriptreact") t)
@@ -1439,7 +1445,6 @@ This is a literate config of my emacs configuration, to install this simply run 
 
     #+end_src
 
-
 *** Common Lisp
 
 #+begin_src emacs-lisp
@@ -1496,6 +1501,13 @@ This is a literate config of my emacs configuration, to install this simply run 
 
 #+begin_src emacs-lisp
  (setq fish-indent-offset 2)
+#+end_src
+
+*** Nix
+
+#+begin_src emacs-lisp
+  (use-package nix-mode
+    :mode "\\.nix\\'")
 #+end_src
 
 ** Snippets
