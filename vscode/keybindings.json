@@ -1,0 +1,16 @@
+[
+    {
+        "key": "alt+x",
+        "command": "workbench.action.showCommands"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "editor.toggleFold",
+        "when": "editorTextFocus && vim.mode == 'Normal'"
+    }
+    ,
+    {
+        "key": "ctrl+space .",
+        "command": "workbench.action.quickOpen"
+    }
+]
