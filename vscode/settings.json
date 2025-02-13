@@ -2,7 +2,6 @@
     "editor.lineNumbers": "relative",
     "editor.minimap.enabled": false,
     "vim.useSystemClipboard": true,
-    "vim.useCtrlKeys": true,
     "vim.leader": "<space>",
     "vim.visualModeKeyBindings": [
         {
@@ -74,6 +73,44 @@
             "commands": [
                 "inlineChat.start"
             ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "l",
+                "2"
+            ],
+            "commands": [
+                "editor.action.rename"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "l",
+                "r"
+            ],
+            "commands": [
+                "editor.action.referenceSearch.trigger"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "l",
+                "d"
+            ],
+            "commands": [
+                "editor.action.showHover"
+            ]
+        },
+        {
+            "before": [
+                "K"
+            ],
+            "commands": [
+                "editor.action.showHover"
+            ]
         }
     ],
     "vim.insertModeKeyBindings": [
@@ -90,6 +127,5 @@
     "update.mode": "manual",
     "window.titleBarStyle": "custom",
     "python.analysis.typeCheckingMode": "standard",
-    "workbench.editor.showTabs": "none",
-    "window.menuBarVisibility": "hidden"
+    "workbench.editor.showTabs": "none"
 }
