@@ -3,6 +3,7 @@
         "key": "alt+x",
         "command": "workbench.action.showCommands"
     },
+    // Doesn't work in settings.json with vim extension 
     {
         "key": "ctrl+enter",
         "command": "editor.toggleFold",
@@ -12,5 +13,18 @@
     {
         "key": "ctrl+space .",
         "command": "workbench.action.quickOpen"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.quickOpenNavigateNext"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.quickOpenNavigatePrevious"
+    }
+    ,
+    {
+        "key": "ctrl+f",
+        "command": "swiper.swiper-word-at-cursor"
     }
 ]
