@@ -1,7 +1,7 @@
 local home = os.getenv("HOME")
 
 local _M = {
-	terminal = "wezterm",
+	terminal = "kitty",
 	modkey = "Mod4",
 	wallpaper = home .. "/.config/awesome/wall.jpeg",
 	altkey = "Mod1",

@@ -3,7 +3,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
-local titlebar_border_radius <const> = 0
+local titlebar_border_radius = 0
 
 client.connect_signal("request::titlebars", function(c)
   local buttons = gears.table.join(

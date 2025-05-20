@@ -111,7 +111,12 @@ awful.keyboard.append_global_keybindings({
     awful.spawn(terminal)
   end, { description = "open a terminal", group = "launcher" }),
 
+  awful.key({ modkey }, "p", function()
+    awful.spawn("rofi -show drun")
+  end, { description = "open rofi", group = "launcher" }),
 })
+
+
 
 -- Hotkeys Keybindings
 awful.keyboard.append_global_keybindings({
