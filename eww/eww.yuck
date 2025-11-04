@@ -59,6 +59,12 @@
     (metric :label ""
             :value volume
             :class "volume")
+    (systray :class "systray"
+             :orientation "h"
+             :space-evenly false
+             :spacing 5
+             :pack-direction "ltr"
+             :prepend-new false)
     (box :class "time" time)))
 
 (defwidget metric [label value class]
@@ -84,4 +90,5 @@
                      :height "0px"
                      :anchor "bottom center")
   :exclusive true
+  :wm-ignore false
   (bar))

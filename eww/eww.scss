@@ -70,6 +70,17 @@
     }
   }
   
+  .systray {
+    padding: 5px 8px;
+    background-color: transparent;
+    
+    * {
+      margin: 0px 3px;
+      padding: 2px;
+    }
+    
+  }
+  
   .time {
     color: #cdd6f4;
     padding: 0px 10px;
