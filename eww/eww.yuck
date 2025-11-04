@@ -20,6 +20,9 @@
 (deflisten tags :initial "[]"
   "bash ~/.config/eww/scripts/get-tags")
 
+(deflisten occupied_tags :initial "[]"
+  "bash ~/.config/eww/scripts/get-occupied-tags")
+
 ;; Widgets
 (defwidget bar []
   (centerbox :orientation "h"
@@ -33,9 +36,9 @@
        :space-evenly false
        :halign "start"
        :spacing 10
-    (label :text "${tags}" :visible false)
+    (label :text "${tags}${occupied_tags}" :visible false)
     (for tag in "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
-      (button :class "tag-entry ${tags =~ '\\[.*${tag}.*\\]' ? 'occupied' : ''}"
+      (button :class "tag-entry ${tags =~ '\\[.*${tag}.*\\]' ? 'active' : occupied_tags =~ '\\[.*${tag}.*\\]' ? 'occupied' : ''}"
               :onclick "xdotool key super+${tag}"
         ""))))
 

@@ -24,6 +24,10 @@
     transition: all 0.3s ease;
     
     &.occupied {
+      background-color: #6c7086;
+    }
+    
+    &.active {
       background-color: #89b4fa;
     }
     
