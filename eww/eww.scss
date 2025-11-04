@@ -1,0 +1,72 @@
+* {
+  all: unset;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 14px;
+}
+
+.bar {
+  background-color: #1e1e2e;
+  color: #cdd6f4;
+  padding: 0px;
+}
+
+// Tags
+.tags {
+  padding: 0px 15px;
+  
+  .tag-entry {
+    min-width: 8px;
+    min-height: 8px;
+    border-radius: 50%;
+    background-color: #45475a;
+    padding: 0;
+    margin: 0;
+    transition: all 0.3s ease;
+    
+    &.occupied {
+      background-color: #89b4fa;
+    }
+    
+    &:hover {
+      background-color: #cba6f7;
+    }
+  }
+}
+
+// Center module
+.date {
+  color: #cdd6f4;
+  padding: 0px 10px;
+}
+
+// Side modules
+.sidestuff {
+  padding: 0px 15px;
+  
+  .metric {
+    padding: 0px 8px;
+    
+    .icon {
+      color: #89b4fa;
+      margin-right: 5px;
+    }
+    
+    .value {
+      color: #cdd6f4;
+    }
+    
+    &.volume .icon {
+      color: #a6e3a1;
+    }
+    
+    &.battery .icon {
+      color: #f9e2af;
+    }
+  }
+  
+  .time {
+    color: #cdd6f4;
+    padding: 0px 10px;
+    font-weight: bold;
+  }
+}

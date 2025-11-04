@@ -1,0 +1,83 @@
+;; Variables
+(defpoll time :interval "10s"
+  "date '+%H:%M'")
+
+(defpoll date :interval "1h"
+  "date '+%A, %B %d'")
+
+(defpoll battery :interval "15s"
+  "cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo '100'")
+
+(defpoll battery_status :interval "15s"
+  "cat /sys/class/power_supply/BAT0/status 2>/dev/null || echo 'Full'")
+
+(defpoll volume :interval "1s"
+  "pamixer --get-volume")
+
+(defpoll volume_muted :interval "1s"
+  "pamixer --get-mute")
+
+(deflisten tags :initial "[]"
+  "bash ~/.config/eww/scripts/get-tags")
+
+;; Widgets
+(defwidget bar []
+  (centerbox :orientation "h"
+    (tags_module)
+    (center_module)
+    (sidestuff)))
+
+(defwidget tags_module []
+  (box :class "tags"
+       :orientation "h"
+       :space-evenly false
+       :halign "start"
+       :spacing 10
+    (label :text "${tags}" :visible false)
+    (for tag in "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+      (button :class "tag-entry ${tags =~ '\\[.*${tag}.*\\]' ? 'occupied' : ''}"
+              :onclick "xdotool key super+${tag}"
+        ""))))
+
+(defwidget center_module []
+  (box :orientation "h"
+       :space-evenly false
+       :halign "center"
+    (label :class "date" :text date)))
+
+(defwidget sidestuff []
+  (box :class "sidestuff"
+       :orientation "h"
+       :space-evenly false
+       :halign "end"
+       :spacing 15
+    (metric :label ""
+            :value volume
+            :class "volume")
+    (metric :label "${battery_status == 'Charging' ? '' : ''}"
+            :value battery
+            :class "battery")
+    (box :class "time" time)))
+
+(defwidget metric [label value class]
+  (box :orientation "h"
+       :class "metric ${class}"
+       :space-evenly false
+       :spacing 5
+    (label :class "icon" :text label)
+    (label :class "value" :text "${value}%")))
+
+;; Window
+(defwindow bar
+  :monitor 0
+  :windowtype "dock"
+  :stacking "fg"
+  :focusable false
+  :geometry (geometry :x "0%"
+                     :y "0%"
+                     :width "100%"
+                     :height "30px"
+                     :anchor "top center")
+  :reserve (struts :side "top" :distance "30px")
+  :exclusive true
+  (bar))

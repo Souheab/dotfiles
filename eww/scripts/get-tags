@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+process_tagmask() {
+  local tagmask=$1
+  if [[ -z "$tagmask" ]]; then
+    tagmask=0
+  fi
+  
+  # Output JSON array of occupied tags (1-9)
+  local occupied="["
+  local first=true
+  for i in {0..8}; do
+    if (( tagmask & (1 << i) )); then
+      if [ "$first" = true ]; then
+        occupied+="$((i + 1))"
+        first=false
+      else
+        occupied+=",$((i + 1))"
+      fi
+    fi
+  done
+  occupied+="]"
+  
+  echo "$occupied"
+}
+
+# Get initial state
+tagmask=$(xprop -root DWM_TAG_MASK | grep -o '".*"' | tr -d '"')
+process_tagmask "$tagmask"
+
+# Watch for changes using xprop -spy (outputs on every change)
+xprop -root -spy DWM_TAG_MASK | while read -r line; do
+  tagmask=$(echo "$line" | grep -o '".*"' | tr -d '"')
+  process_tagmask "$tagmask"
+done
