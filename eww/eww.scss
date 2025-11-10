@@ -20,17 +20,17 @@
     min-height: 0px;
     min-width: 16px;
     border-radius: 50%;
-    background-color: #45475a;
+    background-color: #5c6a93;
     padding: 0;
     margin: 0;
     transition: all 0.3s ease;
     
     &.occupied {
-      background-color: #6c7086;
+      background-color: #5e72cc;
     }
     
     &.active {
-      background-color: #89b4fa;
+      background-color: #009fff;
     }
     
     &:hover {
