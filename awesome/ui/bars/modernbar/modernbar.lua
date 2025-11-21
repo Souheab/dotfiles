@@ -4,7 +4,6 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 local taglist = require("ui.bars.modernbar.taglist")
 local volume = require("ui.widgets.volume")
-local battery = require("ui.widgets.battery")
 local bettertextclock = require("ui.widgets.bettertextclock")
 
 local container_margin_vertical = 5
@@ -21,8 +20,19 @@ awful.screen.connect_for_each_screen(function(s)
   s.mylayoutbox = container(awful.widget.layoutbox(s), 6)
   s.mysystray = container(wibox.widget.systray(), 5)
   s.myvolume = volume().widget
-  s.mybattery = battery().widget
   s.myclock = bettertextclock().widget
+
+  -- Create battery widget only when enabled in GLOBAL.vars
+  if GLOBAL and GLOBAL.vars and GLOBAL.vars.enable_battery then
+    local battery_mod = require("ui.widgets.battery")
+    local ok_batt, batt_widget = pcall(function() return battery_mod() end)
+    if ok_batt and batt_widget and batt_widget.widget then
+      s.mybattery = batt_widget.widget
+    elseif ok_batt and batt_widget and type(batt_widget) == "table" and batt_widget.widget == nil then
+      -- if module returned the widget directly
+      s.mybattery = batt_widget
+    end
+  end
 
   gears.timer({
     timeout = 5,
@@ -30,10 +40,21 @@ awful.screen.connect_for_each_screen(function(s)
     autostart = true,
     callback = function()
       s.myvolume.update()
-      s.mybattery.update()
+      if s.mybattery and type(s.mybattery.update) == "function" then
+        s.mybattery.update()
+      end
       s.myclock.update()
     end,
   })
+
+  -- Build right-side section dynamically so battery can be omitted
+  local right_section = wibox.layout.fixed.horizontal()
+  if s.mybattery then
+    right_section:add(container(s.mybattery, 3, 5))
+  end
+  right_section:add(container(s.myvolume, 3, 5))
+  right_section:add(s.mysystray)
+  right_section:add(s.mylayoutbox)
 
   s.mywibar:setup({
     layout = wibox.layout.align.horizontal,
@@ -43,12 +64,6 @@ awful.screen.connect_for_each_screen(function(s)
       s.mytaglist,
     },
     s.myclock,
-    {
-      layout = wibox.layout.fixed.horizontal,
-      container(s.mybattery, 3, 5),
-      container(s.myvolume, 3, 5),
-      s.mysystray,
-      s.mylayoutbox,
-    },
+    right_section,
   })
 end)

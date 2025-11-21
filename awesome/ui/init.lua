@@ -9,5 +9,7 @@ require("ui.shared.wallpaper")
 require("ui.bars.modernbar")
 
 -- Create and start battery popup
-local battery = require("ui.widgets.battery")
-local battery_popup = battery.popup()
+if GLOBAL.vars.enable_battery then
+    local battery = require("ui.widgets.battery")
+    local battery_popup = battery.popup()
+end

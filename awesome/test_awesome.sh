@@ -15,7 +15,7 @@ while [ ! -e /tmp/.X11-unix/X${disp_num} ] ; do
 done
 
 export DISPLAY=$disp
-awesome -c ~/Documents/programming/projects/NewAwesomeWm/rc.lua &
+awesome -c ~/.config/awesome/rc.lua &
 awesome-client
 
 kill $pid
