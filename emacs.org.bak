@@ -100,10 +100,7 @@ This is a literate config of my emacs configuration, to install this simply run 
     (when (or (string-equal (buffer-file-name)
                         (expand-file-name "~/.config/emacs.org"))
               (string-equal (buffer-file-name)
-                            (expand-file-name "~/.config/dotfiles/emacs.org"))
-              (string-equal (buffer-file-name)
-                            (expand-file-name "~/Documents/dotfiles/emacs.org"))
-              )
+                            (expand-file-name "~/.config/dotfiles/emacs.org")))
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
         (org-babel-tangle))))
@@ -126,49 +123,51 @@ This is a literate config of my emacs configuration, to install this simply run 
 ** Initialize elpaca
 
 #+begin_src emacs-lisp
-  (defvar elpaca-installer-version 0.11)
-  (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-  (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-  (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-  (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                                :ref nil :depth 1 :inherit ignore
-                                :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                                :build (:not elpaca--activate-package)))
-  (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-         (build (expand-file-name "elpaca/" elpaca-builds-directory))
-         (order (cdr elpaca-order))
-         (default-directory repo))
-    (add-to-list 'load-path (if (file-exists-p build) build repo))
-    (unless (file-exists-p repo)
-      (make-directory repo t)
-      (when (<= emacs-major-version 28) (require 'subr-x))
-      (condition-case-unless-debug err
-          (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                    ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
-                                                    ,@(when-let* ((depth (plist-get order :depth)))
-                                                        (list (format "--depth=%d" depth) "--no-single-branch"))
-                                                    ,(plist-get order :repo) ,repo))))
-                    ((zerop (call-process "git" nil buffer t "checkout"
-                                          (or (plist-get order :ref) "--"))))
-                    (emacs (concat invocation-directory invocation-name))
-                    ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                          "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                    ((require 'elpaca))
-                    ((elpaca-generate-autoloads "elpaca" repo)))
-              (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-            (error "%s" (with-current-buffer buffer (buffer-string))))
-        ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-    (unless (require 'elpaca-autoloads nil t)
-      (require 'elpaca)
-      (elpaca-generate-autoloads "elpaca" repo)
-      (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
-  (add-hook 'after-init-hook #'elpaca-process-queues)
-  (elpaca `(,@elpaca-order))
+      (defvar elpaca-installer-version 0.7)
+      (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+      (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+      (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+      (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                                    :ref nil :depth 1
+                                    :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                                    :build (:not elpaca--activate-package)))
+      (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+             (build (expand-file-name "elpaca/" elpaca-builds-directory))
+             (order (cdr elpaca-order))
+             (default-directory repo))
+        (add-to-list 'load-path (if (file-exists-p build) build repo))
+        (unless (file-exists-p repo)
+          (make-directory repo t)
+          (when (< emacs-major-version 28) (require 'subr-x))
+          (condition-case-unless-debug err
+              (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                       ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                       ,@(when-let ((depth (plist-get order :depth)))
+                                                           (list
+                                                            (format "--depth=%d" depth) "--no-single-branch"))
+                                                       ,(plist-get order :repo) ,repo))))
+                       ((zerop (call-process "git" nil buffer t "checkout"
+                                             (or (plist-get order :ref) "--"))))
+                       (emacs (concat invocation-directory invocation-name))
+                       ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                             "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                       ((require 'elpaca))
+                       ((elpaca-generate-autoloads "elpaca" repo)))
+                  (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+                (error "%s" (with-current-buffer buffer (buffer-string))))
+            ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+        (unless (require 'elpaca-autoloads nil t)
+          (require 'elpaca)
+          (elpaca-generate-autoloads "elpaca" repo)
+          (load "./elpaca-autoloads")))
+      (add-hook 'after-init-hook #'elpaca-process-queues)
+      (elpaca `(,@elpaca-order))
+
 
     ;; Install use-package support
     (elpaca elpaca-use-package
-    ;; Enable use-package :ensure support for Elpaca.
-    (elpaca-use-package-mode))
+      ;; Enable use-package :ensure support for Elpaca.
+      (elpaca-use-package-mode))
 
     (add-hook 'elpaca-after-init-hook #'(lambda () (load "~/.config/emacs/late-init.el")))
 #+end_src
@@ -318,6 +317,8 @@ This is a literate config of my emacs configuration, to install this simply run 
     (doom-themes-org-config)
     (load-theme 'doom-tokyo-night t)
     )
+
+  (use-package kanagawa-theme)
 #+end_src
 
 *** Dashboard
@@ -978,6 +979,740 @@ This is a literate config of my emacs configuration, to install this simply run 
     )
 #+end_src
 
+* EAF
+
+#+begin_src emacs-lisp
+  (setq use-eaf nil)
+  (setq eaf-path "~/.config/emacs/site-lisp/emacs-application-framework/")
+
+  (when (and use-eaf (file-directory-p eaf-path))
+    (ignore-errors
+      (add-to-list 'load-path eaf-path)
+      (require 'eaf)
+      (require 'eaf-browser)
+      (require 'eaf-pdf-viewer)
+      (require 'eaf-camera)
+      (require 'eaf-music-player)
+      (require 'eaf-video-player)
+
+      (define-key eaf-mode-map* (kbd "SPC") nil)
+      (eaf-bind-key nil "SPC" eaf-pdf-viewer-keybinding)
+      (eaf-bind-key scroll_up_page "K" eaf-pdf-viewer-keybinding)
+      (eaf-bind-key scroll_down_page "J" eaf-pdf-viewer-keybinding)
+      (eaf-bind-key nil "SPC" eaf-music-player-keybinding)
+      (eaf-bind-key js_toggle_play_status "p" eaf-music-player-keybinding)
+      ))
+#+end_src
+
+* Turning Emacs into an IDE
+** Magit
+
+#+begin_src emacs-lisp 
+    (use-package magit
+      :commands (magit magit-status))
+#+end_src
+
+** Initializing LSP
+
+#+begin_src emacs-lisp 
+
+  (defun s/lsp-mode-setup ()
+    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    (lsp-headerline-breadcrumb-mode)
+    )
+
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :init
+    (setq lsp-keymap-prefix "C-c C-l")
+    :hook ((lsp-mode . s/lsp-mode-setup)
+           (lsp-help-mode . s/set-solaire-variable-pitch-font))
+    :custom
+    (lsp-enable-on-type-formatting nil)
+    (lsp-inlay-hint-enable t)
+    (lsp-update-inlay-hints-on-scroll nil)
+    :config
+    (lsp-enable-which-key-integration t)
+    (add-to-list 'lsp-language-id-configuration '(js-jsx-mode . "javascriptreact") t)
+    )
+
+
+  ;; TODO: Add LSP Booster: Once plists are fixed in lsp-mode
+  ;; https://github.com/blahgeek/emacs-lsp-booster
+  ;; See https://github.com/emacs-lsp/lsp-mode/issues/4325
+
+  (use-package lsp-ui
+    :custom
+    (lsp-ui-sideline-show-hover nil)
+    :hook (lsp-mode . lsp-ui-mode))
+
+  (use-package company
+    :after prog-mode
+    :hook (prog-mode . company-mode)
+    :bind (:map company-active-map
+                ("<tab>" . company-complete-selection))
+    (:map prog-mode-map
+          ("M-SPC" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.0)
+                                          ; :config
+    ;; https://company-mode.github.io/manual/Backends.html
+    :config
+    (add-hook 'prog-mode-hook
+              (lambda ()
+                (setq-local company-backends
+                            '((:separate company-capf company-yasnippet)
+                              company-yasnippet)
+                            )))
+    )
+
+
+    (use-package company-box
+      :after company
+      :hook (company-mode . company-box-mode)
+      )
+
+    (use-package flycheck
+      :after lsp-mode)
+
+    (use-package yasnippet
+      :ensure (:wait t)
+      :bind(
+            :map yas-minor-mode-map
+            ("C-," . yas-expand)
+            ("C-M-SPC" . company-yasnippet)
+            )
+      :config
+      (yas-global-mode)
+      (global-company-mode 1)
+      )
+
+
+    ;; Quickrun
+    (use-package quickrun
+      :commands (quickrun))
+
+
+#+end_src
+
+** DAP
+
+#+begin_src emacs-lisp
+  (use-package dap-mode)
+  (setq dap-default-terminal-kind "external")
+#+end_src
+
+** Treemacs
+
+#+begin_src emacs-lisp
+
+  (use-package treemacs
+    :custom
+    (treemacs-width 30)
+    (treemacs--width-is-locked nil)
+    (treemacs-width-is-initially-locked nil)
+    :commands
+    (treemacs)
+    :config
+    (treemacs-toggle-fixed-width)
+    )
+
+  (use-package treemacs-persp
+    :after (treemacs persp-mode)
+    :config
+    (treemacs-set-scope-type 'Perspectives)
+    )
+
+  (use-package treemacs-evil
+    :after (treemacs evil)
+    )
+
+  (use-package treemacs-all-the-icons
+    :after (treemacs all-the-icons)
+    :config
+    (treemacs-load-theme "all-the-icons"))
+
+
+
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :ensure t)
+#+end_src
+
+** Treesitter
+
+#+begin_src emacs-lisp 
+    (use-package tree-sitter
+      :hook (tree-sitter-mode . tree-sitter-hl-mode)
+      :commands (tree-sitter-mode))
+
+    (use-package tree-sitter-langs
+      :after tree-sitter)
+
+    (setq treesit-font-lock-level 4)
+
+    (setq treesit-language-source-alist
+          '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+            (cmake "https://github.com/uyha/tree-sitter-cmake")
+            (css "https://github.com/tree-sitter/tree-sitter-css")
+            (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+            (go "https://github.com/tree-sitter/tree-sitter-go")
+            (html "https://github.com/tree-sitter/tree-sitter-html")
+            (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+            (json "https://github.com/tree-sitter/tree-sitter-json")
+            (make "https://github.com/alemuller/tree-sitter-make")
+            (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+            (python "https://github.com/tree-sitter/tree-sitter-python")
+            (toml "https://github.com/tree-sitter/tree-sitter-toml")
+            (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+            (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+            (yaml "https://github.com/ikatyang/tree-sitter-yaml")
+            (c "https://github.com/tree-sitter/tree-sitter-c")
+            (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+            ))
+
+
+  (custom-set-faces
+     '(font-lock-constant-face
+     ((t (:weight bold
+          ))))
+     '(tree-sitter-hl-face:type
+     ((t (:weight semi-bold
+          :inherit font-lock-builtin-face
+          ))))
+     '(tree-sitter-hl-face:function.call
+     ((t (:inherit font-lock-function-name-face
+          :slant italic
+          ))))
+     '(tree-sitter-hl-face:function
+     ((t (:inherit font-lock-function-name-face
+          :weight bold
+          ))))
+     '(tree-sitter-hl-face:variable.parameter
+     ((t (:inherit tree-sitter-hl-face:variable
+          :weight normal
+          :slant italic
+          ))))
+     '(tree-sitter-hl-face:keyword
+     ((t (:inherit font-lock-keyword-face
+          :slant italic
+          ))))
+     '(tree-sitter-hl-face:operator
+     ((t (:inherit tree-sitter-hl-face:keyword
+          :slant normal
+          ))))
+     '(tree-sitter-hl-face:constant.builtin
+     ((t (:inherit font-lock-constant-face
+          ))))
+   )
+
+  (require 'treesit)
+  ;; Installs language grammars if not present
+  (mapc #'(lambda (lang) (when (not (treesit-ready-p lang t)) (treesit-install-language-grammar lang)))
+        (mapcar #'car treesit-language-source-alist))
+
+#+end_src
+
+** Autoformatting
+
+#+begin_src emacs-lisp 
+
+  (use-package format-all
+    :after lsp-mode)
+  
+#+end_src
+
+** Language Support
+*** Initialization Hooks
+
+#+begin_src emacs-lisp
+
+  (defun s/init-regular-lsp-lang ()
+    (lsp-deferred)
+    (tree-sitter-mode 1)
+    (tree-sitter-hl-mode 1))
+  
+#+end_src
+
+*** Emacs Lisp
+
+#+begin_src emacs-lisp 
+  (use-package highlight-quoted
+    :hook (emacs-lisp-mode . highlight-quoted-mode))
+
+  ;(use-package hi-var :ensure (
+  ;  :host
+  ;  "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/hi-var.el"
+  ;  ))
+
+  ;(use-package hl-defined :ensure (
+  ;  :host "https://www.emacswiki.org/emacs/download/hl-defined.el"))
+
+  ;; (require 'hl-defined)
+  ;; (add-hook 'emacs-lisp-mode-hook #'hdefd-highlight-mode)
+  ;; (set-face-attribute 'hdefd-functions nil
+  ;;                     :foreground (face-foreground
+  ;;                                  'font-lock-function-name-face))
+
+  ;; (set-face-attribute 'hdefd-variables nil
+  ;;                     :foreground (face-foreground
+  ;;                                  'default)
+  ;;                     :weight 'semi-bold
+  ;;                     :slant 'italic)
+
+  (use-package macrostep
+    :commands (macrostep-mode macrostep-expand)
+    )
+
+
+#+end_src
+
+*** Python
+
+#+begin_src emacs-lisp 
+
+  (use-package python
+    :mode ("\\.py\\'" . python-ts-mode)
+    :custom
+    (python-indent-offset 4)
+    (lsp-pylsp-plugins-flake8-enabled nil)
+    (lsp-pylsp-plugins-pydocstyle-enabled nil)
+    (lsp-pylsp-plugins-pylint-enabled t)
+    (lsp-pylsp-server-command "/home/solo/.local/bin/pylsp")
+    :hook ((python-ts-mode . lsp-deferred)
+           (python-ts-mode .
+                           (lambda () (setq-local python-indent-offset 4)
+                             (setq-local indent-bars-spacing-override 4)
+                             (copilot-mode 1)
+                             ))
+           )
+    :config
+    :ensure nil
+    )
+
+  (use-package pyvenv
+    :custom
+    (pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+    :config
+    (pyvenv-mode)
+    )
+
+#+end_src
+
+*** Rust
+
+#+begin_src emacs-lisp 
+
+  (use-package rustic
+    :mode ("\\.rs\\'" . rustic-mode)
+    :hook
+    (rustic-mode . (lambda ()
+                     (s/init-regular-lsp-lang)
+                     (setq-local indent-bars-spacing-override 4)
+                     (indent-bars-mode 1)
+                     ))
+    :custom
+    (rustic-indent-offset 4)
+    (rust-prettify-symbols-alist (("INFINITY" . 8734)))
+    (lsp-rust-analyzer-binding-mode-hints t)
+    (lsp-rust-analyzer-closing-brace-hints t)
+    (lsp-rust-analyzer-display-chaining-hints t)
+    (lsp-rust-analyzer-closing-brace-hints-min-lines 1)
+    (lsp-rust-analyzer-display-closure-return-type-hints t)
+    (lsp-rust-analyzer-display-lifetime-elision-hints-enable "never")
+    (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+    (lsp-rust-analyzer-display-parameter-hints t)
+    (lsp-rust-analyzer-display-reborrow-hints nil)
+    :config
+    )
+
+#+end_src
+
+*** C
+
+#+begin_src emacs-lisp 
+  (use-package cc-mode
+    :mode (("\\.c\\'" . c-mode)
+           ("\\.h\\'" . c-or-c++-mode)
+           ("\\.cpp\\'" . c++-mode)
+           )
+    :hook (((c-ts-mode c++-ts-mode) . lsp-deferred)
+           ((c-mode c++-mode) . s/init-regular-lsp-lang))
+    :ensure nil
+    )
+
+#+end_src
+
+*** Lua
+
+#+begin_src emacs-lisp 
+
+  (use-package lua-mode
+    :mode "\\.lua\\'"
+    :custom
+    (lua-indent-level standard-indent)
+    :hook
+    (lua-mode . (lambda () (lsp-deferred) (tree-sitter-mode))))
+
+#+end_src
+
+*** Web dev
+**** HTML
+
+#+begin_src emacs-lisp
+
+  (use-package web-mode
+    :hook (web-mode . (lambda() (emmet-mode 1) (lsp-mode 1)))
+    :defer t
+    )
+
+  (use-package emmet-mode
+    :config
+    (add-to-list 'emmet-jsx-major-modes 'tsx-ts-mode)
+    :commands (emmet-mode))
+
+#+end_src
+
+**** CSS
+
+#+begin_src emacs-lisp
+
+  (customize-set-variable 'css-indent-offset standard-indent)
+
+  (use-package css-mode
+    :mode "\\.css\\'"
+    :ensure nil
+    )
+
+   (use-package lsp-tailwindcss
+       :init
+       (setq lsp-tailwindcss-add-on-mode t)
+       :custom
+       (lsp-tailwindcss-suggestions nil)
+       )
+
+  (add-hook 'html-mode-hook #'(lambda () (emmet-mode 1) (lsp-mode 1)))
+
+
+#+end_src
+
+**** JS/JSX/TS/TSX
+
+#+begin_src emacs-lisp
+  (customize-set-variable 'js-indent-level standard-indent)
+
+
+  (use-package npm-mode
+    :commands (npm-mode))
+
+
+  (use-package prettier-js
+    :commands (prettier-js-mode))
+
+
+  (use-package js2-mode
+    :mode "\\.js\\'"
+    :custom
+    (js2-strict-missing-semi-warning nil))
+
+  (use-package rjsx-mode
+    :after (js2-mode)
+    :mode "\\.jsx\\'")
+
+  ;; typescript stuff
+  (use-package typescript-ts-mode
+    :mode (("\\.ts\\'" . typescript-ts-mode) ("\\.tsx\\'" . tsx-ts-mode))
+    :hook
+    ((typescript-ts-mode tsx-ts-mode) .
+     (lambda () (lsp-deferred)
+       ; Disabled for now cus it slows stuff down too much
+       ;(prettier-js-mode)
+       (copilot-mode 1)
+       ))
+    :ensure nil
+    )
+
+  (use-package prisma-mode :ensure (:host github :repo "davidarenas/prisma-mode"))
+
+  ;; TODO: Think about and deal with this whole define key shenanigans
+  ;(general-define-key
+  ; :keymaps '(tsx-ts-mode-map typescript-ts-mode-map)
+  ; :states 'insert
+  ; "M-m" 'emmet-expand-yas
+  ; )
+
+
+    #+end_src
+
+*** Common Lisp
+
+#+begin_src emacs-lisp
+  (use-package sly
+    :custom
+    (inferior-lisp-program "sbcl")
+    )
+#+end_src
+
+*** Latex
+#+begin_src emacs-lisp
+
+  (use-package auctex
+    :ensure (
+             :pre-build (("./autogen.sh")
+                         ("./configure"
+                          "--without-texmf-dir"
+                          "--with-packagelispdir=./"
+                          "--with-packagedatadir=./")
+                         ("make"))
+             :build (:not elpaca--compile-info) ;; Make will take care of this step
+             :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
+             :version (lambda (_) (require 'tex-site) AUCTeX-version))
+    )
+  (use-package latex-preview-pane)
+#+end_src
+
+*** Go
+
+#+begin_src emacs-lisp
+   (use-package go-mode
+     :mode ("\\.go\\'" . go-mode)
+     :config
+     (define-key go-mode-map (kbd "<normal-state> g d") nil)
+     :hook (go-mode . s/init-regular-lsp-lang)
+     )
+
+  (use-package go-guru
+    :commands (go-guru-describe)
+    )
+
+   (lsp-register-custom-settings
+    '(("gopls.hints" ((assignVariableTypes . t)
+                      (compositeLiteralFields . t)
+                      (compositeLiteralTypes . t)
+                      (constantValues . t)
+                      (functionTypeParameters . t)
+                      (parameterNames . t)
+                      (rangeVariableTypes . t)))))
+
+#+end_src
+
+*** Fish shell
+
+#+begin_src emacs-lisp
+ (setq fish-indent-offset 2)
+#+end_src
+
+*** Nix
+
+#+begin_src emacs-lisp
+  (use-package nix-mode
+    :mode "\\.nix\\'")
+#+end_src
+
+** Snippets
+
+#+begin_src emacs-lisp
+   (use-package doom-snippets :after lsp-mode :ensure
+     (:host github :repo "Souheab/emacs-snippets" :files ("*" (:exclude ".git" ".github")))) 
+#+end_src
+
+** Copilot
+*** Installation
+
+#+begin_src emacs-lisp
+  (use-package copilot :ensure (:host github :repo "copilot-emacs/copilot.el"))
+#+end_src
+
+** Workspaces
+*** Install Workspaces
+
+#+begin_src emacs-lisp
+  (use-package persp-mode
+    :commands (persp-switch-to-buffer)
+    :custom
+    (persp-autokill-buffer-on-remove 'kill-weak)
+    (persp-reset-windows-on-nil-window-conf nil)
+    (persp-nil-hidden t)
+    (persp-save-dir "~/.config/emacs/workspaces/")
+    (persp-set-last-persp-for-new-frames t)
+    (persp-kill-foreign-buffer-behaviour nil)
+    (persp-remove-buffers-from-nil-persp-behaviour nil)
+    (persp-auto-resume-time -1) ; Don't auto-load on startup
+    (persp-auto-save-opt 1)
+    :config
+    (persp-mode 1)
+    :demand t
+    )
+
+  (use-package emacs-workspaces :ensure (:host github
+   :repo "Souheab/emacs-workspaces"))
+  (setq workspace-fallback-buffer "*dashboard*")
+#+end_src
+
+*** Workspace: My Interactive Functions
+
+#+begin_src emacs-lisp
+
+  (defun s/vertico--workspace-buffer-state ()
+    (let ((preview
+           ;; Only preview in current window and other window.
+           ;; Preview in frames and tabs is not possible since these don't get cleaned up.
+           (if (memq consult--buffer-display
+                     '(switch-to-buffer switch-to-buffer-other-window))
+               (let ((orig-buf (current-buffer))
+                     (other-win nil)
+                     (cleanup-buffers nil))
+                 `(lambda (action cand)
+                    (when (eq action 'preview)
+                      (when (and (eq consult--buffer-display #'switch-to-buffer-other-window)
+                                 (not ,other-win))
+                        (switch-to-buffer-other-window ,orig-buf)
+                        (setq ,other-win (selected-window)))
+                      (let ((win (or ,other-win (selected-window))))
+                        (when (window-live-p win)
+                          (with-selected-window win
+                            (cond
+                             ((and cand (get-buffer cand))
+                              (unless (workspace-contains-buffer-p cand)
+                                (cl-pushnew cand ,cleanup-buffers))
+                              (switch-to-buffer cand 'norecord))
+                             ((buffer-live-p ,orig-buf)
+                              (switch-to-buffer ,orig-buf 'norecord)
+                              (mapc #'persp-remove-buffer ,cleanup-buffers)))))))))
+             #'ignore)))
+      `(lambda (action cand)
+         (funcall ,preview action cand)
+         )
+      ))
+
+  (defun s/vertico--workspace-generate-sources ()
+    "Generate list of consult buffer sources for all workspaces"
+    (let* ((active-workspace (workspace-current-name))
+           (workspaces (workspace-list-names))
+           (key-range (append (cl-loop for i from ?1 to ?9 collect i)
+                              (cl-loop for i from ?a to ?z collect i)
+                              (cl-loop for i from ?A to ?Z collect i)))
+           (last-i (length workspaces))
+           (i 0))
+      (mapcar (lambda (name)
+                (cl-incf i)
+                `(:name     ,name
+                  :hidden   ,(not (string= active-workspace name))
+                  :narrow   ,(nth (1- i) key-range)
+                  :category buffer
+                  :state    s/vertico--workspace-buffer-state
+                  :items    (lambda ()
+                            (consult--buffer-query
+                                :sort 'visibility
+                                :as #'buffer-name
+                                :predicate
+                                (lambda (buf)
+                                (when-let (workspace (workspace-get ,name t))
+                                    ;; add this function workspace-contains-buffer-p
+                                    (workspace-contains-buffer-p buf workspace)))
+                                ))))
+              (workspace-list-names))))
+
+  (defun s/vertico/switch-workspace-buffer (&optional force-same-workspace)
+    "Switch to another buffer in the same or a specified workspace.
+
+      Type the workspace's number (starting from 1) followed by a space to display its
+      buffer list. Selecting a buffer in another workspace will switch to that
+      workspace instead. If FORCE-SAME-WORKSPACE (the prefix arg) is non-nil, that
+      buffer will be opened in the current workspace instead."
+    (interactive "P")
+    (when-let (buffer (consult--multi (s/vertico--workspace-generate-sources)
+                                      :require-match
+                                      (confirm-nonexistent-file-or-buffer)
+                                      :prompt (format "Switch to buffer (%s): "
+                                                      (workspace-current-name))
+                                      :history 'consult--buffer-history
+                                      :sort nil))
+      (let ((origin-workspace (plist-get (cdr buffer) :name)))
+        ;; Switch to the workspace the buffer belongs to, maybe
+        (if (or (equal origin-workspace (workspace-current-name))
+                force-same-workspace)
+            (funcall consult--buffer-display (car buffer))
+          (workspace-switch origin-workspace)
+          (message "Switched to %S workspace" origin-workspace)
+          (if-let (window (get-buffer-window (car buffer)))
+              (select-window window)
+            (funcall consult--buffer-display (car buffer)))))))
+
+
+
+#+end_src
+
+*** Workspace and Project.el/Projectile Integration
+
+#+begin_src emacs-lisp
+  (defun workspaces-switch-to-project-h ()
+    "Hook to run after project-switch-project, to start a new workspace
+          for each project."
+    (let* ((project-name
+            (file-name-nondirectory
+             (directory-file-name
+              (project-root
+               (project-current)))))
+           (switch-buffer (current-buffer))
+           (new-persp (ignore-errors (workspace-new project-name)))
+           (old-persp (get-current-persp))
+           (old-persp-name (persp-name old-persp))
+           )
+      ;; If new-persp nil
+      (when (not new-persp)
+        (setq new-persp (workspace-get project-name)))
+      (when (not (string= project-name old-persp-name))
+        (persp-add-buffer switch-buffer new-persp)
+        (persp-remove-buffer switch-buffer old-persp)
+        (workspace-switch project-name)
+        (switch-to-buffer switch-buffer)
+        )
+      )
+    (run-with-timer 0.3 0 #'workspace/display)
+    )
+
+  (add-hook 'project-switch-project-hook #'workspaces-switch-to-project-h)
+  (advice-add 'project-switch-project :after
+              #'(lambda (&rest _args)
+                  (run-hooks 'project-switch-project-hook)))
+
+  (add-hook 'projectile-after-switch-project-hook #'workspaces-switch-to-project-h)
+
+#+end_src
+
+** Code Folding
+
+#+begin_src emacs-lisp
+  (use-package yafolding
+    :hook (prog-mode . yafolding-mode))
+
+  (use-package ts-fold
+    :ensure (:host github :repo "emacs-tree-sitter/ts-fold")
+    :commands (ts-fold-mode)
+    )
+  
+  (use-package fringe-helper :ensure (:host github :repo "nschum/fringe-helper.el") :after ts-fold)
+#+end_src
+
+** Indent Guides
+
+#+begin_src emacs-lisp
+  (use-package indent-bars :ensure (:host github :repo "jdtsmith/indent-bars"))
+  (setq
+    indent-bars-color '("#FFFFFF" :face-bg t :blend 0.2)
+    indent-bars-pattern "."
+    indent-bars-width-frac 0.1
+    indent-bars-pad-frac 0.1
+    indent-bars-zigzag nil
+    indent-bars-color-by-depth nil
+    indent-bars-highlight-current-depth nil
+    indent-bars-display-on-blank-lines t)
+  (add-hook 'prog-mode-hook #'(lambda () (indent-bars-mode 1)))
+  (add-hook 'emacs-lisp-mode-hook #'(lambda () (indent-bars-mode -1)))
+#+end_src
+
 * My functions
 ** Buffer Related
 
@@ -1153,7 +1888,7 @@ This is a literate config of my emacs configuration, to install this simply run 
   ;; GOTO map interactive functions
   (defun s/goto/literate-config ()
     (interactive)
-    (find-file "~/Documents/dotfiles/emacs.org"))
+    (find-file "~/.config/emacs.org"))
 
   (defun s/goto/elisp-config ()
     (interactive)

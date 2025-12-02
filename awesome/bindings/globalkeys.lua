@@ -114,6 +114,10 @@ awful.keyboard.append_global_keybindings({
   awful.key({ modkey }, "p", function()
     awful.spawn("rofi -show drun")
   end, { description = "open rofi", group = "launcher" }),
+
+  awful.key({ modkey, "Shift" }, "Tab", function()
+    awful.spawn("rofi -show windowcd")
+  end, { description = "open rofi windowcd", group = "launcher" }),
 })
 
 
