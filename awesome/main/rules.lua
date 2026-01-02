@@ -24,7 +24,12 @@ ruled.client.connect_signal("request::rules", function()
 
   ruled.client.append_rule({
     rule = { class = "discord" },
-    properties = { tag = screen[1].tags[7] },
+    properties = { tag = screen[1].tags[9] },
+  })
+
+  ruled.client.append_rule({
+    rule = { class = "vesktop" },
+    properties = { tag = screen[1].tags[9] },
   })
 
   ruled.client.append_rule({
@@ -35,11 +40,6 @@ ruled.client.connect_signal("request::rules", function()
   ruled.client.append_rule({
     rule = { class = "resonance" },
     properties = { tag = screen[1].tags[6] },
-  })
-
-  ruled.client.append_rule({
-    rule = { class = "Emacs" },
-    properties = { tag = screen[1].tags[2] },
   })
 
   ruled.client.append_rule({ rule = { instance = "polybar" }, properties = { border_width = 0 } })
