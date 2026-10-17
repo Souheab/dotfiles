@@ -941,6 +941,10 @@ This is a literate config of my emacs configuration, to install this simply run 
 #+begin_src emacs-lisp 
     (setq ispell-program-name "hunspell")
 
+    ;; Emacs 30+ adds `ispell-completion-at-point' to text-mode buffers, which
+    ;; needs a plain word list (none on NixOS) and breaks Corfu in org/text.
+    (setq text-mode-ispell-word-completion nil)
+
    (setq ispell-hunspell-dict-paths-alist
   '(("en_US" "~/.local/share/dict/en_US.aff")
     ("en_US" "/usr/share/dict/en_US.aff")
