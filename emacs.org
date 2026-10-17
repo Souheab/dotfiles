@@ -343,7 +343,7 @@ This is a literate config of my emacs configuration, to install this simply run 
         ("project"
          "briefcase"
          "Open project"
-         projectile-switch-project)
+         project-switch-project)
 
         ("org-agenda"
          "calendar"
@@ -371,7 +371,7 @@ This is a literate config of my emacs configuration, to install this simply run 
         )
       )
 
-    (s/get-keybind #'projectile-switch-project)
+    (s/get-keybind #'project-switch-project)
 
     (dashboard-setup-startup-hook)
     (general-unbind 'normal dashboard-mode-map "q")
@@ -550,13 +550,9 @@ This is a literate config of my emacs configuration, to install this simply run 
     :config
     (eros-mode 1))
 
-  (use-package projectile
-    :config
-     (projectile-mode) ;; running this SLOWs down emacs startup that's why
-    )           ;; wrapped around (when)
-
-  (use-package projectile-ripgrep
-    :after projectile)
+  ;; Built-in project management; searches use ripgrep via `xref-search-program'
+  (use-package project
+    :ensure nil)
 
 
   (use-package ace-window
@@ -785,7 +781,9 @@ This is a literate config of my emacs configuration, to install this simply run 
     :hook (org-mode . org-superstar-mode)
     :custom
     (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●"))
-    (org-superstar-leading-bullet "")
+    ;; Hide leading stars outright. Composing them to "" (an empty
+    ;; composition) segfaults Emacs 31's redisplay.
+    (org-superstar-remove-leading-stars t)
     (org-superstar-leading-fallback 32)
     :config
     (set-face-attribute 'org-superstar-header-bullet nil
@@ -997,6 +995,82 @@ This is a literate config of my emacs configuration, to install this simply run 
     )
 #+end_src
 
+* Programming
+** Magit
+
+#+begin_src emacs-lisp
+
+  (use-package magit
+    :commands (magit-status))
+#+end_src
+
+** Completion
+
+#+begin_src emacs-lisp
+
+  (use-package corfu
+    :custom
+    (corfu-auto t)
+    (corfu-cycle t)
+    :config
+    (global-corfu-mode 1))
+#+end_src
+
+** Tree-sitter
+
+Grammars come from Nix (=treesit-grammars.with-all-grammars= in essential.nix).
+
+#+begin_src emacs-lisp
+
+  (use-package treesit
+    :ensure nil
+    :custom
+    (treesit-font-lock-level 4)
+    :config
+    ;; Only switch to *-ts-modes once the Nix grammar bundle is installed
+    (when (treesit-language-available-p 'nix)
+      (customize-set-variable 'treesit-enabled-modes t)))
+#+end_src
+
+** Eglot
+
+#+begin_src emacs-lisp
+
+  (use-package eglot
+    :ensure nil
+    :custom
+    (eglot-autoshutdown t)
+    (eglot-events-buffer-config '(:size 0 :format full)))
+#+end_src
+
+** Nix
+
+#+begin_src emacs-lisp
+
+  (defun s/eglot-format-buffer-if-managed ()
+    "Format with eglot, but never block a save when no server is running."
+    (when (eglot-managed-p)
+      (eglot-format-buffer)))
+
+  (defun s/nix-mode-setup ()
+    (eglot-ensure)
+    (add-hook 'before-save-hook #'s/eglot-format-buffer-if-managed nil t))
+
+  (use-package nix-ts-mode
+    :mode "\\.nix\\'"
+    :hook (nix-ts-mode . s/nix-mode-setup)
+    :config
+    (with-eval-after-load 'eglot
+      (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nixd")))))
+
+  ;; nixd evaluates my flake for nixpkgs, NixOS and home-manager option completion
+  (setq-default eglot-workspace-configuration
+                '(:nixd (:nixpkgs (:expr "import (builtins.getFlake \"/home/suller/Documents/nixos\").inputs.nixpkgs { }")
+                         :formatting (:command ["nixfmt"])
+                         :options (:nixos (:expr "(builtins.getFlake \"/home/suller/Documents/nixos\").nixosConfigurations.lancestrom.options")
+                                   :home-manager (:expr "(builtins.getFlake \"/home/suller/Documents/nixos\").nixosConfigurations.lancestrom.options.home-manager.users.type.getSubOptions []")))))
+#+end_src
+
 * My functions
 ** Buffer Related
 
@@ -1041,7 +1115,11 @@ This is a literate config of my emacs configuration, to install this simply run 
 
   (defun org-src-fontification-disable-modes ()
     (when (org-src-fontification-buffer-p)
-      (indent-bars-mode -1)
+      ;; Guard each mode: calling one that isn't installed errors and breaks
+      ;; native fontification of every src block
+      (when (fboundp 'indent-bars-mode) (indent-bars-mode -1))
+      (when (bound-and-true-p highlight-indent-guides-mode)
+        (highlight-indent-guides-mode -1))
       )
     )
 
@@ -1250,10 +1328,6 @@ This is a literate config of my emacs configuration, to install this simply run 
    "c" 'popper-cycle)
 
   (general-define-key
-   :prefix-map 'projectile-management-map
-   "p" 'projectile-switch-project) ;; not being used ATM
-
-  (general-define-key
    :prefix-map  'workspace-management-map
    "SPC" 'workspace/display
    "s" 'workspace/switch-to
@@ -1261,6 +1335,16 @@ This is a literate config of my emacs configuration, to install this simply run 
    "b" 'workspace/switch-to-buffer
    "n" 'workspace/new)
 
+
+  (general-define-key
+   :prefix-map  'eglot-management-map
+   "r" 'eglot-rename
+   "a" 'eglot-code-actions
+   "f" 'eglot-format-buffer
+   "d" 'flymake-show-buffer-diagnostics
+   "n" 'flymake-goto-next-error
+   "p" 'flymake-goto-prev-error
+   "R" 'eglot-reconnect)
 
   (general-define-key
    :prefix-map  'eaf-management-map
@@ -1302,9 +1386,9 @@ This is a literate config of my emacs configuration, to install this simply run 
    "m" '(:keymap minor-mode-management-map :which-key "manage minor modes")
    "o" '(:keymap org-management-map :which-key "org")
    "s" '(:keymap search-map :which-key "search")
-   "p" '(:keymap projectile-command-map :which-key "project" :package projectile)
+   "p" '(:keymap project-prefix-map :which-key "project")
    "P" '(:keymap s/popper-map :which-key "popper")
-   "l" '(:keymap lsp-command-map :which-key "lsp" :package lsp-mode)
+   "l" '(:keymap eglot-management-map :which-key "lsp")
    "SPC" '(:keymap workspace-management-map :which-key "workspaces")
    "e" '(:keymap eaf-management-map :which-key "EAF")
    "t" '(:keymap terminal-launch-map :which-key "Terminal")
@@ -1399,9 +1483,8 @@ This is a literate config of my emacs configuration, to install this simply run 
 #+begin_src emacs-lisp 
   (defun s/dwim-help-at-point ()
     (interactive)
-    (cond ((bound-and-true-p lsp-mode)
-           (lsp-describe-thing-at-point)
-           (with-current-buffer "*lsp-help*"))
+    (cond ((bound-and-true-p eglot--managed-mode)
+           (eldoc-doc-buffer t))
           (t (helpful-at-point))))
 
   ;; Help font formatting
@@ -1416,11 +1499,6 @@ This is a literate config of my emacs configuration, to install this simply run 
     (mixed-pitch-mode 1)
     (face-remap-add-relative 'default 'solaire-variable-pitch-face)
     )
-
-  ;; write a mode-change-hook that detects if set-solaire-variable-pitch-font needs to be enabled
-  (advice-add 'lsp-help-mode :after #'(lambda (&rest _a)
-                                        (run-hooks 'lsp-help-mode-hook)
-                                        ))
 
   ;; Needed to work properly in emacsclient. (Yes even my own hacky implemetation)
   (add-hook 'company-box-mode-hook (lambda ()
