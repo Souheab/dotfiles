@@ -824,6 +824,36 @@ This is a literate config of my emacs configuration, to install this simply run 
             (lambda (state)
               (when (eq state 'children)
                 (setq org-cycle-subtree-status 'subtree))))
+
+  ;; Make evil's p/P paste clipboard images in org (saved via `yank-media')
+  (setq org-yank-image-save-method "images/")
+
+  (defun my/clipboard-has-image-p ()
+    (let ((targets (ignore-errors (gui-get-selection 'CLIPBOARD 'TARGETS))))
+      (and (vectorp targets)
+           (seq-some (lambda (type) (string-prefix-p "image/" (symbol-name type)))
+                     targets))))
+
+  (defun my/org-paste-image (after orig count &optional register &rest args)
+    (if (and (derived-mode-p 'org-mode)
+             (memq register '(nil ?+ ?*))
+             (my/clipboard-has-image-p))
+        (progn
+          (when (and after (not (eolp)))
+            (forward-char))
+          (yank-media)
+          (org-link-preview-refresh))
+      (apply orig count register args)))
+
+  (defun my/org-paste-image-after (&rest args)
+    (apply #'my/org-paste-image t args))
+
+  (defun my/org-paste-image-before (&rest args)
+    (apply #'my/org-paste-image nil args))
+
+  (with-eval-after-load 'evil
+    (advice-add 'evil-paste-after :around #'my/org-paste-image-after)
+    (advice-add 'evil-paste-before :around #'my/org-paste-image-before))
 #+end_src
 
 ** Keybinding
