@@ -46,18 +46,21 @@ This is a literate config of my emacs configuration, to install this simply run 
 * Early Init
 
 #+begin_src emacs-lisp :tangle ~/.config/emacs/early-init.el
+  ;;; -*- lexical-binding: t -*-
   (setq package-enable-at-startup nil)
 #+end_src 
 
 * Late Init
 
 #+begin_src emacs-lisp :tangle ~/.config/emacs/late-init.el
+  ;;; -*- lexical-binding: t -*-
   (load "~/.config/emacs/keybinds.el")
 #+end_src
 
 * Performance
 
 #+begin_src emacs-lisp
+  ;;; -*- lexical-binding: t -*-
   ;; Startup performance
   (setq gc-cons-threshold (* 100 1024 1024))
 
@@ -74,13 +77,15 @@ This is a literate config of my emacs configuration, to install this simply run 
 ** Org Agenda Files
 
 #+begin_src emacs-lisp :tangle ~/.config/emacs/custom.el
-;    (setq org-directory "~/Documents/org")
-;
-;    (setq org-agenda-files
-;          '(
-;            "~/Documents/org/agenda/planned.org"
-;            "~/Documents/org/agenda/university.org"
-;            ))
+  ;;; -*- lexical-binding: t -*-
+  (setq org-directory "~/Documents/org")
+
+  (setq org-agenda-files
+        '(
+          "~/Documents/org/agenda/tasks.org"
+          "~/Documents/org/agenda/routine.org"
+          "~/Documents/org/agenda/projects.org"
+          ))
 #+end_src
 
 ** Load Custom Variables
@@ -126,15 +131,19 @@ This is a literate config of my emacs configuration, to install this simply run 
 ** Initialize elpaca
 
 #+begin_src emacs-lisp
-  (defvar elpaca-installer-version 0.11)
+  ;; Nix builds have no `emacs-build-time', and this elpaca version predates
+  ;; Emacs 31.1, so it can't work out the core date on its own.
+  (when (and (null emacs-build-time) (version= emacs-version "31.1"))
+    (defvar elpaca-core-date '(20260824)))
+  (defvar elpaca-installer-version 0.12)
   (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
   (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-  (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+  (defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
   (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
                                 :ref nil :depth 1 :inherit ignore
                                 :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                                :build (:not elpaca--activate-package)))
-  (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+                                :build (:not elpaca-activate)))
+  (let* ((repo  (expand-file-name "elpaca/" elpaca-sources-directory))
          (build (expand-file-name "elpaca/" elpaca-builds-directory))
          (order (cdr elpaca-order))
          (default-directory repo))
@@ -163,14 +172,12 @@ This is a literate config of my emacs configuration, to install this simply run 
       (elpaca-generate-autoloads "elpaca" repo)
       (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
   (add-hook 'after-init-hook #'elpaca-process-queues)
+  (add-hook 'elpaca-after-init-hook #'(lambda () ))
   (elpaca `(,@elpaca-order))
-
-    ;; Install use-package support
-    (elpaca elpaca-use-package
-    ;; Enable use-package :ensure support for Elpaca.
-    (elpaca-use-package-mode))
-
-    (add-hook 'elpaca-after-init-hook #'(lambda () (load "~/.config/emacs/late-init.el")))
+  (elpaca elpaca-use-package
+  ;; Enable use-package :ensure support for Elpaca.
+  (elpaca-use-package-mode))
+  (setq elpaca-lock-file "/home/suller/Documents/dotfiles/elpaca-lock.el")
 #+end_src
 
 ** Initialize Keybinding Systems
@@ -201,7 +208,8 @@ This is a literate config of my emacs configuration, to install this simply run 
 #+begin_src emacs-lisp 
 
   (use-package general
-    :ensure (:wait t) 
+    :ensure (:wait t)
+    :demand t
     :config
     (general-create-definer s/leader-keys
       :keymaps 'override
@@ -250,7 +258,7 @@ This is a literate config of my emacs configuration, to install this simply run 
     (add-hook 'prog-mode-hook
               #'(lambda ()
                   (display-line-numbers-mode 1)
-                  (toggle-truncate-lines 1)
+                  (setq truncate-lines t)
                   (electric-pair-mode 1)))
 
 
@@ -275,9 +283,7 @@ This is a literate config of my emacs configuration, to install this simply run 
     (setq standard-indent 2)
 
     ;; C source code
-    (setq find-function-C-source-directory "~/.local/share/emacs-source-code/emacs-29.1/src")
-
-    )
+    (setq find-function-C-source-directory "~/.local/share/emacs-source-code/emacs-29.1/src") )
 #+end_src
 
 * Packages
@@ -452,7 +458,9 @@ This is a literate config of my emacs configuration, to install this simply run 
     (dashboard-center-content 
      t)
     (dashboard-banner-logo-title "Emacs my beloved")
-    (dashboard-startup-banner "~/.config/emacs/assets/emacs.png")
+    (dashboard-startup-banner (if (file-exists-p "~/.config/emacs/assets/emacs.png")
+                                 "~/.config/emacs/assets/emacs.png"
+                               'logo))
     (dashboard-projects-backend 'project-el)
     (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
     (dashboard-set-init-info t)
@@ -624,6 +632,7 @@ This is a literate config of my emacs configuration, to install this simply run 
 **** Keybinding
 
 #+begin_src emacs-lisp  :tangle ~/.config/emacs/keybinds.el
+  ;;; -*- lexical-binding: t -*-
   (general-define-key
    :keymaps 'vertico-map
    "C-j" #'vertico-next
@@ -767,7 +776,8 @@ This is a literate config of my emacs configuration, to install this simply run 
     :config
     (setq org-ellipsis " ▾")
     (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-    :ensure (:wait t)
+    ;; Use the Org bundled with Emacs; installing it via elpaca mixes two versions
+    :ensure nil
     )
 
   (use-package org-superstar
@@ -876,6 +886,15 @@ This is a literate config of my emacs configuration, to install this simply run 
 
 #+end_src
 
+** Org Pomodoro
+
+#+begin_src emacs-lisp
+  (use-package org-pomodoro
+    :ensure t
+    :commands org-pomodoro
+    :bind (:map org-mode-map
+                ("C-c p" . org-pomodoro)))
+#+end_src
 ** Evil Org mode
 
 #+begin_src emacs-lisp 
@@ -1432,4 +1451,6 @@ This is a literate config of my emacs configuration, to install this simply run 
 #+begin_src emacs-lisp
   (when (file-exists-p "~/.config/emacs/machine-specific.el")
     (load "~/.config/emacs/machine-specific.el"))
+
+  (load "~/.config/emacs/late-init.el")
 #+end_src
